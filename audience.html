@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>P&amp;C on the Road 2026</title>
+<style>
+@font-face { font-family:'72'; src:url('https://ui5.sap.com/resources/sap/ui/core/themes/sap_fiori_3/fonts/72-Regular.woff2') format('woff2'); font-weight:400; }
+@font-face { font-family:'72'; src:url('https://ui5.sap.com/resources/sap/ui/core/themes/sap_fiori_3/fonts/72-Bold.woff2') format('woff2'); font-weight:700; }
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+:root {
+  --pink:  #E91E8C;
+  --pink2: #B0146A;
+  --navy:  #00144A;
+  --navy2: #0A1628;
+  --navy3: #122040;
+  --gold:  #F5A623;
+  --white: #FFFFFF;
+}
+
+html, body {
+  width:100%; height:100%; overflow:hidden;
+  font-family:'72','Segoe UI',Arial,sans-serif;
+  color: var(--white);
+  background: var(--navy);
+}
+body { display:flex; flex-direction:column; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   HEADER
+───────────────────────────────────────────────────────────────────── */
+header {
+  background: linear-gradient(90deg, #00144A 0%, #0A1628 50%, #00144A 100%);
+  border-bottom: 3px solid var(--pink);
+  padding: 8px 14px;
+  display:flex; align-items:center; justify-content:space-between;
+  flex-shrink:0; position:relative;
+}
+header::after {
+  content:''; position:absolute; bottom:-1px; left:0; right:0; height:1px;
+  background: linear-gradient(90deg,transparent,rgba(233,30,140,.55),transparent);
+}
+.hd-left { display:flex; flex-direction:column; gap:2px; }
+.hd-title {
+  font-size:clamp(.9rem,3.7vw,1.06rem); font-weight:700;
+  display:flex; align-items:center; gap:9px;
+}
+/* Road marking bars */
+.hd-marks { display:flex; flex-direction:column; gap:3px; flex-shrink:0; }
+.hd-marks i {
+  display:block; height:3px; border-radius:2px;
+  background:var(--pink);
+}
+.hd-marks i:nth-child(1){ width:18px; }
+.hd-marks i:nth-child(2){ width:11px; opacity:.6; }
+.hd-marks i:nth-child(3){ width:7px;  opacity:.3; }
+.hd-sub {
+  font-size:clamp(.58rem,2.3vw,.7rem);
+  color:rgba(255,255,255,.36); padding-left:27px;
+}
+.conn {
+  font-size:clamp(.6rem,2.4vw,.72rem);
+  padding:4px 11px; border-radius:20px; font-weight:700; white-space:nowrap;
+}
+.conn-ok   { background:rgba(0,200,83,.13); color:#69f0ae; border:1px solid rgba(0,200,83,.26); }
+.conn-wait { background:rgba(233,30,140,.13); color:#FF4DB8; border:1px solid rgba(233,30,140,.28); }
+
+/* ─────────────────────────────────────────────────────────────────────
+   ON-STAGE BANNER
+───────────────────────────────────────────────────────────────────── */
+.stage-banner {
+  display:none; padding:7px 14px; flex-shrink:0;
+  background:rgba(233,30,140,.09); border-bottom:1px solid rgba(233,30,140,.22);
+  border-left:4px solid var(--pink);
+}
+.stage-banner.show { display:block; }
+.sb-label {
+  font-size:clamp(.54rem,2.2vw,.64rem); font-weight:700;
+  letter-spacing:1.5px; text-transform:uppercase; color:var(--pink); margin-bottom:2px;
+}
+.sb-text   { font-size:clamp(.82rem,3.4vw,.96rem); font-weight:700; line-height:1.35; }
+.sb-leader { font-size:clamp(.6rem,2.4vw,.7rem); color:rgba(255,255,255,.4); margin-top:2px; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   INSTRUCTION BAR
+───────────────────────────────────────────────────────────────────── */
+.instr {
+  padding:4px 14px 3px; flex-shrink:0; text-align:center;
+  font-size:clamp(.66rem,2.7vw,.78rem); color:rgba(255,255,255,.36); line-height:1.4;
+}
+.instr strong { color:var(--pink); }
+.instr-note   { font-size:clamp(.5rem,2vw,.6rem); color:rgba(255,255,255,.2); }
+
+/* ═════════════════════════════════════════════════════════════════════
+   ROADMAP STRIP
+   A road surface with dashed lane markings and 5 location-pin markers
+   one per BINGO column (B · I · N · G · O)
+═════════════════════════════════════════════════════════════════════ */
+.roadmap-wrap {
+  flex-shrink:0;
+  padding:0 10px;
+  position:relative;
+}
+
+/* ── Pin row — sits above the road ── */
+.pins-row {
+  display:grid; grid-template-columns:repeat(5,1fr); gap:6px;
+  position:relative; z-index:3;
+  padding-bottom:2px;
+}
+.pin-item {
+  display:flex; flex-direction:column; align-items:center;
+}
+/* Circular location-pin head */
+.pin-head {
+  width: clamp(38px,9.5vw,52px);
+  height: clamp(38px,9.5vw,52px);
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--pink2));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(233,30,140,.22), 0 6px 18px rgba(233,30,140,.4);
+  position:relative; z-index:2;
+}
+.pin-letter {
+  font-size:clamp(1.1rem,4.4vw,1.55rem);
+  font-weight:700; color:#fff;
+  text-shadow:0 1px 5px rgba(0,0,0,.55);
+  line-height:1;
+}
+/* Triangle tail pointing down to road */
+.pin-tail {
+  width:0; height:0;
+  border-left:  clamp(6px,1.5vw,8px) solid transparent;
+  border-right: clamp(6px,1.5vw,8px) solid transparent;
+  border-top:   clamp(8px,2vw,11px)  solid var(--pink2);
+  margin-top:-1px;
+  filter:drop-shadow(0 3px 4px rgba(0,0,0,.45));
+  position:relative; z-index:2;
+}
+
+/* ── Road surface — sits between pins and labels ── */
+.road-surface {
+  position:relative;
+  height:28px;
+  background:var(--navy3);
+  border-top:   2px solid rgba(255,255,255,.16);
+  border-bottom:2px solid rgba(255,255,255,.16);
+  border-radius:3px;
+  overflow:hidden;
+  z-index:1;
+}
+/* Dashed white centre-line lane markings */
+.road-surface::before {
+  content:'';
+  position:absolute; top:50%; left:0; right:0;
+  height:3px; margin-top:-1.5px;
+  background:repeating-linear-gradient(
+    90deg,
+    rgba(255,255,255,.55) 0px, rgba(255,255,255,.55) 18px,
+    transparent 18px, transparent 30px
+  );
+}
+/* Subtle road shoulder tints */
+.road-surface::after {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.04) 0%, transparent 30%,
+      transparent 70%, rgba(0,0,0,.18) 100%
+    );
+}
+
+/* ── Category labels — sit below road ── */
+.cats-row {
+  display:grid; grid-template-columns:repeat(5,1fr); gap:6px;
+  padding-top:5px;
+  position:relative; z-index:3;
+}
+.cat-label {
+  text-align:center;
+  font-size:clamp(.58rem,2.3vw,.76rem);
+  font-weight:700; color:rgba(255,255,255,.7);
+  text-transform:uppercase; letter-spacing:.5px;
+  line-height:1;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   BINGO GRID
+═════════════════════════════════════════════════════════════════════ */
+.bgrid {
+  flex:1; display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:6px; padding:6px 10px 10px; min-height:0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   CELLS — destination milestone cards
+   White cards on dark navy — easy on the eye, high contrast
+───────────────────────────────────────────────────────────────────── */
+.cell {
+  border-radius:10px;
+  background:#FFFFFF;
+  border:1px solid rgba(10,22,40,.1);
+  border-top:3px solid var(--accent,var(--pink));
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:4px; padding:8px 4px 7px;
+  cursor:pointer; user-select:none;
+  text-align:center; position:relative; overflow:hidden;
+  transition:transform .14s cubic-bezier(.34,1.56,.64,1), box-shadow .14s, border-color .14s;
+  box-shadow:0 2px 12px rgba(0,0,0,.18);
+}
+/* Subtle top sheen */
+.cell::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:35%;
+  background:linear-gradient(180deg,rgba(255,255,255,.6),transparent);
+  border-radius:inherit; pointer-events:none;
+}
+/* Milestone dot — top-right corner */
+.cell .mile {
+  position:absolute; top:5px; right:6px;
+  width: clamp(14px,3vw,18px);
+  height:clamp(14px,3vw,18px);
+  border-radius:50%;
+  background:var(--accent,rgba(10,22,40,.15));
+  opacity:.3;
+}
+.cell:active { transform:scale(.88); }
+
+.cell .ico {
+  font-size:clamp(1.25rem,5vw,1.85rem); line-height:1;
+}
+.cell .lbl {
+  font-size:clamp(.78rem,3.2vw,1rem);
+  font-weight:700; color:#00144A; line-height:1.25;
+}
+.cell .sub {
+  font-size:clamp(.6rem,2.4vw,.77rem);
+  color:rgba(0,20,74,.48); line-height:1.2;
+}
+
+/* Category accent colours — richer for white card contrast */
+.c-org  { --accent:#0070F2; }
+.c-ai   { --accent:#7B2D8B; }
+.c-cult { --accent:#00897B; }
+.c-lead { --accent:#2E7D32; }
+.c-skil { --accent:#E65100; }
+.c-fun  { --accent:var(--pink); }
+
+/* ── MARKED — permanently called, locked forever ── */
+.cell.marked {
+  border-color:var(--pink) !important;
+  border-top-color:var(--pink) !important;
+  background:#FFF0F7 !important;
+  box-shadow:0 0 0 2px rgba(233,30,140,.35), 0 4px 16px rgba(233,30,140,.18) !important;
+  cursor:not-allowed;
+}
+.cell.marked .lbl { color:var(--pink2); }
+.cell.marked .mile {
+  background:var(--pink); opacity:1;
+  box-shadow:0 0 6px rgba(233,30,140,.6);
+}
+.cell.marked .mile::after {
+  content:'\2713';
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:.58rem; font-weight:700; color:#fff; line-height:1;
+}
+/* Big tick badge — sits over the cell content */
+.cell.marked .cell-lock {
+  display:flex;
+}
+.cell.marked .cell-lock::after {
+  content:'\2713';
+  font-size:1.6rem; font-weight:900; color:var(--pink);
+  background:rgba(255,255,255,.82);
+  width:2.2rem; height:2.2rem; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(233,30,140,.35);
+}
+
+/* ── LEADING — vote locked in this round ── */
+.cell.leading {
+  border-top-color:var(--gold) !important;
+  box-shadow:0 0 0 2px rgba(245,166,35,.5), 0 0 22px rgba(245,166,35,.3) !important;
+  animation:milePulse 1.6s ease-in-out infinite;
+}
+@keyframes milePulse {
+  0%,100% { box-shadow:0 0 0 2px rgba(245,166,35,.5),0 0 22px rgba(245,166,35,.3); }
+  50%     { box-shadow:0 0 0 5px rgba(245,166,35,.22),0 0 36px rgba(245,166,35,.5); }
+}
+/* "YOUR VOTE ✓" badge on voted cell */
+.cell.leading .cell-lock {
+  display:flex;
+  align-items:flex-end; justify-content:center;
+  padding-bottom:6px;
+}
+.cell.leading .cell-lock::after {
+  content:'YOUR VOTE \2713';
+  font-size:.58rem; font-weight:700; letter-spacing:.04em;
+  color:#fff; background:rgba(180,120,0,.82);
+  padding:3px 8px; border-radius:20px;
+  white-space:nowrap;
+}
+.cell.marked.leading { border-top-color:var(--pink)!important; animation:none; }
+
+/* ── DIMMED — other cells when a vote is already cast this round ── */
+.cell.dimmed {
+  opacity:.38;
+  filter:grayscale(50%);
+  cursor:not-allowed;
+}
+
+/* ── CELL-LOCK overlay — hidden by default, shown by marked/leading ── */
+.cell-lock {
+  display:none;
+  position:absolute; inset:0;
+  border-radius:inherit;
+  align-items:center; justify-content:center;
+  pointer-events:none;
+  z-index:2;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   BINGO WIN BANNER
+───────────────────────────────────────────────────────────────────── */
+.bingo-banner {
+  display:none; position:fixed; top:50%; left:50%;
+  transform:translate(-50%,-50%) scale(.6); opacity:0;
+  background:linear-gradient(135deg,var(--pink),var(--pink2));
+  color:#fff; border-radius:16px; padding:22px 36px;
+  font-size:clamp(1.2rem,5vw,1.6rem); font-weight:700; text-align:center;
+  box-shadow:0 0 0 6px rgba(233,30,140,.22), 0 16px 50px rgba(0,0,0,.7);
+  z-index:500; transition:transform .4s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+}
+.bingo-banner .bn-sub {
+  font-size:.65em; font-weight:400; color:rgba(255,255,255,.75);
+  display:block; margin-top:6px;
+}
+.bingo-banner.show { display:block; transform:translate(-50%,-50%) scale(1); opacity:1; }
+
+/* ── NAME ENTRY OVERLAY ── */
+.name-overlay {
+  position:fixed; inset:0; background:var(--navy);
+  background-image:radial-gradient(circle,rgba(233,30,140,.07) 1px,transparent 1px),radial-gradient(circle,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:28px 28px,56px 56px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  z-index:9000; padding:32px 24px; text-align:center;
+}
+.name-overlay.hidden { display:none; }
+.name-ol-title { font-size:1.5rem; font-weight:700; color:#fff; margin-bottom:6px; }
+.name-ol-sub   { font-size:.9rem; color:rgba(255,255,255,.45); margin-bottom:32px; line-height:1.5; }
+.name-ol-input {
+  width:100%; max-width:300px; background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.2); border-radius:12px;
+  padding:14px 18px; font-size:1.1rem; font-weight:700; color:#fff;
+  font-family:inherit; text-align:center; margin-bottom:14px; outline:none;
+  transition:border-color .2s;
+}
+.name-ol-input:focus { border-color:var(--pink); }
+.name-ol-input::placeholder { color:rgba(255,255,255,.25); font-weight:400; }
+.name-ol-btn {
+  width:100%; max-width:300px; background:linear-gradient(135deg,var(--pink),var(--pink2));
+  color:#fff; border:none; border-radius:12px; padding:15px;
+  font-size:1.05rem; font-weight:700; cursor:pointer; font-family:inherit;
+  box-shadow:0 6px 20px rgba(233,30,140,.4); transition:opacity .2s;
+}
+.name-ol-btn:hover { opacity:.88; }
+
+/* ── BINGO CLAIM OVERLAY ── */
+.bingo-claim-ov {
+  display:none; position:fixed; inset:0; z-index:8500;
+  background:rgba(0,10,30,.92); backdrop-filter:blur(12px);
+  flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:28px;
+}
+.bingo-claim-ov.show { display:flex; }
+.bc-title {
+  font-size:3rem; font-weight:700; color:var(--pink); line-height:1;
+  text-shadow:0 0 40px rgba(233,30,140,.7); margin-bottom:10px;
+  animation:pop .4s cubic-bezier(.34,1.56,.64,1);
+}
+.bc-sub { font-size:1rem; color:rgba(255,255,255,.55); margin-bottom:36px; line-height:1.5; }
+.bc-btn {
+  background:linear-gradient(135deg,var(--pink),var(--pink2));
+  color:#fff; border:none; border-radius:16px; padding:22px 52px;
+  font-size:1.25rem; font-weight:700; cursor:pointer; font-family:inherit;
+  box-shadow:0 10px 32px rgba(233,30,140,.55);
+  animation:pop .5s .15s cubic-bezier(.34,1.56,.64,1) both;
+  transition:opacity .2s;
+}
+.bc-btn:disabled { opacity:.35; cursor:not-allowed; }
+.bc-claimed { font-size:.95rem; color:#69f0ae; margin-top:22px; display:none; font-weight:700; }
+.bc-claimed.show { display:block; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   POLL OVERLAY
+───────────────────────────────────────────────────────────────────── */
+.poll-overlay {
+  display:none; position:fixed; inset:0; z-index:900;
+  background:rgba(0,0,0,.8); backdrop-filter:blur(8px);
+  align-items:flex-end; justify-content:center;
+}
+.poll-overlay.show { display:flex; }
+.poll-sheet {
+  background:linear-gradient(160deg,var(--navy),var(--navy3));
+  border:1px solid rgba(255,255,255,.1); border-top:3px solid var(--pink);
+  border-radius:20px 20px 0 0; padding:22px 18px 40px;
+  width:100%; max-width:420px;
+  animation:sheetUp .32s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes sheetUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.ps-title {
+  font-size:clamp(.54rem,2.2vw,.66rem); font-weight:700;
+  letter-spacing:1.5px; text-transform:uppercase; color:var(--pink); margin-bottom:8px;
+}
+.ps-q  { font-size:clamp(.86rem,3.4vw,1rem); font-weight:700; line-height:1.45; margin-bottom:14px; }
+.ps-opts { display:flex; flex-direction:column; gap:9px; }
+.ps-opt {
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14);
+  border-radius:10px; padding:13px 15px;
+  font-size:clamp(.8rem,3.2vw,.92rem); font-weight:700; color:#fff;
+  text-align:left; cursor:pointer; font-family:'72','Segoe UI',Arial,sans-serif; transition:all .14s;
+}
+.ps-opt:active { transform:scale(.97); }
+.ps-opt.picked { background:rgba(233,30,140,.2); border-color:var(--pink); color:var(--pink); }
+.ps-done {
+  text-align:center; padding:12px 0 0;
+  font-size:clamp(.64rem,2.6vw,.74rem); color:rgba(255,255,255,.42); display:none;
+}
+.ps-done.show { display:block; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   WILDCARD OVERLAY
+───────────────────────────────────────────────────────────────────── */
+.wildcard-overlay {
+  display:none; position:fixed; inset:0; z-index:950;
+  background:rgba(0,0,0,.82); backdrop-filter:blur(8px);
+  align-items:flex-end; justify-content:center;
+}
+.wildcard-overlay.show { display:flex; }
+.wc-sheet {
+  background:linear-gradient(160deg,var(--navy),var(--navy3));
+  border:1px solid rgba(255,255,255,.1); border-top:3px solid var(--gold);
+  border-radius:20px 20px 0 0; padding:20px 18px 44px;
+  width:100%; max-width:420px;
+  animation:sheetUp .32s cubic-bezier(.34,1.56,.64,1);
+}
+/* Header block */
+.wc-header { text-align:center; margin-bottom:20px; }
+.wc-badge {
+  display:inline-block; font-size:.6rem; font-weight:700; letter-spacing:2px;
+  text-transform:uppercase; color:var(--gold); background:rgba(245,166,35,.12);
+  border:1px solid rgba(245,166,35,.3); border-radius:20px;
+  padding:3px 12px; margin-bottom:8px;
+}
+.wc-headline {
+  font-size:clamp(1.05rem,4.2vw,1.22rem); font-weight:700; color:#fff;
+  margin-bottom:5px;
+}
+.wc-intro {
+  font-size:clamp(.74rem,2.9vw,.84rem); color:rgba(255,255,255,.48);
+  line-height:1.5;
+}
+/* Step labels */
+.wc-step {
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:10px;
+}
+.wc-step-num {
+  width:24px; height:24px; border-radius:50%; flex-shrink:0;
+  background:var(--gold); color:#00144A;
+  font-size:.75rem; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+}
+.wc-step-txt {
+  font-size:clamp(.78rem,3.1vw,.9rem); font-weight:700; color:#fff;
+}
+/* Speaker row */
+.wc-speakers { display:flex; gap:8px; margin-bottom:18px; }
+.wc-speaker {
+  flex:1; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.13);
+  border-radius:10px; padding:10px 6px 8px; text-align:center; cursor:pointer;
+  font-family:'72','Segoe UI',Arial,sans-serif; color:#fff;
+  transition:all .14s; display:flex; flex-direction:column; align-items:center; gap:2px;
+}
+.wc-speaker:active { transform:scale(.95); }
+.wc-speaker.picked {
+  background:rgba(245,166,35,.18); border-color:var(--gold); color:var(--gold);
+}
+.wc-speaker.picked .wc-stap { color:var(--gold); }
+.wc-av   { font-size:1.4rem; line-height:1; }
+.wc-sname { font-size:clamp(.76rem,3vw,.86rem); font-weight:700; line-height:1.2; }
+.wc-stap  { font-size:.6rem; color:rgba(255,255,255,.35); font-weight:400; }
+.wc-speaker.picked .wc-stap::before { content:'\2713 '; }
+/* Textarea */
+.wc-input {
+  width:100%; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.13);
+  border-radius:10px; padding:13px 14px;
+  font-size:clamp(.8rem,3.2vw,.9rem); color:#fff;
+  font-family:'72','Segoe UI',Arial,sans-serif; resize:none; outline:none;
+  transition:border-color .14s; margin-bottom:16px;
+}
+.wc-input:focus { border-color:var(--gold); }
+.wc-input::placeholder { color:rgba(255,255,255,.26); }
+/* Send button */
+.wc-send {
+  width:100%; background:linear-gradient(135deg,var(--gold),#E65100);
+  border:none; border-radius:10px; padding:15px;
+  font-family:'72','Segoe UI',Arial,sans-serif;
+  font-size:clamp(.84rem,3.4vw,.96rem); font-weight:700;
+  color:#fff; cursor:pointer; transition:opacity .14s; margin-bottom:0;
+}
+.wc-send:disabled { opacity:.35; cursor:not-allowed; }
+.wc-done {
+  text-align:center; padding:12px 0 0;
+  font-size:clamp(.72rem,2.9vw,.84rem); color:rgba(255,255,255,.55);
+  display:none; line-height:1.5;
+}
+.wc-done.show { display:block; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   TOAST
+───────────────────────────────────────────────────────────────────── */
+.toast {
+  position:fixed; top:66px; left:50%; transform:translateX(-50%) translateY(-60px);
+  background:linear-gradient(135deg,var(--pink),var(--pink2)); color:#fff;
+  border-radius:8px; padding:8px 20px;
+  font-size:clamp(.67rem,2.7vw,.77rem); font-weight:700;
+  z-index:8000; box-shadow:0 4px 16px rgba(233,30,140,.4);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1); pointer-events:none; white-space:nowrap;
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* ── NAME OVERLAY ── */
+.name-overlay {
+  position:fixed; inset:0; z-index:9500;
+  background:var(--navy);
+  background-image:radial-gradient(circle,rgba(233,30,140,.07) 1px,transparent 1px),
+    radial-gradient(circle,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:28px 28px,56px 56px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:32px 24px; text-align:center;
+}
+.name-overlay.hidden { display:none; }
+.name-ol-title { font-size:1.6rem; font-weight:700; color:#fff; margin-bottom:8px; }
+.name-ol-sub   { font-size:.9rem; color:rgba(255,255,255,.45); margin-bottom:32px; line-height:1.6; }
+.name-ol-input {
+  width:100%; max-width:300px; background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.22); border-radius:12px;
+  padding:15px 18px; font-size:1.1rem; font-weight:700;
+  color:#fff; font-family:inherit; text-align:center;
+  margin-bottom:14px; outline:none; display:block;
+}
+.name-ol-input:focus { border-color:var(--pink); }
+.name-ol-input::placeholder { color:rgba(255,255,255,.28); font-weight:400; }
+.name-ol-btn {
+  width:100%; max-width:300px;
+  background:linear-gradient(135deg,var(--pink),var(--pink2));
+  color:#fff; border:none; border-radius:12px; padding:16px;
+  font-size:1.05rem; font-weight:700; cursor:pointer; font-family:inherit;
+  box-shadow:0 6px 20px rgba(233,30,140,.4);
+}
+
+/* ── BINGO CLAIM OVERLAY ── */
+.bingo-claim-ov {
+  display:none; position:fixed; inset:0; z-index:8500;
+  background:rgba(0,10,30,.92); backdrop-filter:blur(12px);
+  flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:28px;
+}
+.bingo-claim-ov.show { display:flex; }
+.bc-title {
+  font-size:3rem; font-weight:700; color:var(--pink);
+  text-shadow:0 0 40px rgba(233,30,140,.7);
+  animation:pop .4s cubic-bezier(.34,1.56,.64,1); margin-bottom:12px;
+}
+.bc-sub { font-size:.96rem; color:rgba(255,255,255,.6); margin-bottom:36px; line-height:1.6; }
+.bc-btn {
+  background:linear-gradient(135deg,var(--pink),var(--pink2));
+  color:#fff; border:none; border-radius:16px; padding:20px 52px;
+  font-size:1.2rem; font-weight:700; cursor:pointer; font-family:inherit;
+  box-shadow:0 8px 30px rgba(233,30,140,.55);
+  animation:pop .5s .15s cubic-bezier(.34,1.56,.64,1) both;
+}
+.bc-btn:disabled { opacity:.35; cursor:not-allowed; }
+.bc-claimed {
+  display:none; margin-top:24px; font-size:1rem;
+  color:#69f0ae; font-weight:700;
+}
+.bc-claimed.show { display:block; }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="hd-left">
+    <div class="hd-title">
+      <div class="hd-marks"><i></i><i></i><i></i></div>
+      P&amp;C Transformation on the Road 2026
+    </div>
+    <div class="hd-sub">Tap a cell to vote &nbsp;&middot;&nbsp; If your topic gets called, it marks &nbsp;&middot;&nbsp; 4 in a row = BINGO</div>
+  </div>
+  <span class="conn conn-wait" id="connBadge">Connecting&hellip;</span>
+</header>
+
+<!-- On-stage banner -->
+<div class="stage-banner" id="stageBanner">
+  <div class="sb-label">&#9654; On Stage Now</div>
+  <div class="sb-text"   id="stageText"></div>
+  <div class="sb-leader" id="stageLdr"></div>
+</div>
+
+<!-- Instructions -->
+<div class="instr">
+  <strong>Tap a cell</strong> to vote for that topic &nbsp;&bull;&nbsp; <strong>If it gets called, it marks!</strong><br>
+  <span class="instr-note">Gold glow = your vote this round &nbsp;&middot;&nbsp; One vote per round</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     ROADMAP — location pins above road, category labels below
+════════════════════════════════════════════════════════════════════ -->
+<div class="roadmap-wrap">
+
+  <!-- 5 location pins — one per BINGO column -->
+  <div class="pins-row">
+    <div class="pin-item">
+      <div class="pin-head"><span class="pin-letter">B</span></div>
+      <div class="pin-tail"></div>
+    </div>
+    <div class="pin-item">
+      <div class="pin-head"><span class="pin-letter">I</span></div>
+      <div class="pin-tail"></div>
+    </div>
+    <div class="pin-item">
+      <div class="pin-head"><span class="pin-letter">N</span></div>
+      <div class="pin-tail"></div>
+    </div>
+    <div class="pin-item">
+      <div class="pin-head"><span class="pin-letter">G</span></div>
+      <div class="pin-tail"></div>
+    </div>
+    <div class="pin-item">
+      <div class="pin-head"><span class="pin-letter">O</span></div>
+      <div class="pin-tail"></div>
+    </div>
+  </div>
+
+  <!-- The road surface with dashed lane markings -->
+  <div class="road-surface"></div>
+
+  <!-- Category destination labels -->
+  <div class="cats-row">
+    <span class="cat-label">Org</span>
+    <span class="cat-label">AI</span>
+    <span class="cat-label">Culture</span>
+    <span class="cat-label">Lead</span>
+    <span class="cat-label">Learn</span>
+  </div>
+
+</div>
+
+<!-- ── BINGO GRID ── -->
+<div class="bgrid" id="bgrid"></div>
+
+<div class="bingo-banner" id="bingoBanner">
+  BINGO!
+  <span class="bn-sub">Raise your hand! &#9996;</span>
+</div>
+
+<!-- Name entry -->
+<div class="name-overlay" id="nameOverlay">
+  <div class="name-ol-title">&#187; P&amp;C Bingo 2026</div>
+  <div class="name-ol-sub">Enter your first name to get your card.<br>Every card is different — good luck!</div>
+  <input class="name-ol-input" id="nameInput" placeholder="Your first name" maxlength="30" autocomplete="off"
+    onkeydown="if(event.key==='Enter')startGame()">
+  <button class="name-ol-btn" onclick="startGame()">Get My Card &#8594;</button>
+</div>
+
+<!-- BINGO claim -->
+<div class="bingo-claim-ov" id="bingoClaimOv">
+  <div class="bc-title">BINGO! &#127881;</div>
+  <div class="bc-sub">You completed a row!<br>Tap below to officially claim your win.</div>
+  <button class="bc-btn" id="bcBtn" onclick="claimBingo()">&#127942; CLAIM BINGO!</button>
+  <div class="bc-claimed" id="bcClaimed">&#10004; Claimed! Raise your hand &mdash; the moderator will call your name.</div>
+</div>
+
+<!-- WILDCARD -->
+<div class="wildcard-overlay" id="wildcardOverlay">
+  <div class="wc-sheet">
+
+    <div class="wc-header">
+      <div class="wc-badge">&#9670; WILDCARD</div>
+      <div class="wc-headline">Your turn to ask!</div>
+      <div class="wc-intro">The audience picks the question this round.<br>Follow the 3 steps below.</div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="wc-step">
+      <div class="wc-step-num">1</div>
+      <div class="wc-step-txt">Who do you want to ask?</div>
+    </div>
+    <div class="wc-speakers" id="wcSpeakers">
+      <button class="wc-speaker" onclick="pickSpeaker('Christian')">
+        <span class="wc-av">&#128100;</span>
+        <span class="wc-sname">Christian</span>
+        <span class="wc-stap">Tap to pick</span>
+      </button>
+      <button class="wc-speaker" onclick="pickSpeaker('Verena')">
+        <span class="wc-av">&#128100;</span>
+        <span class="wc-sname">Verena</span>
+        <span class="wc-stap">Tap to pick</span>
+      </button>
+      <button class="wc-speaker" onclick="pickSpeaker('Miri')">
+        <span class="wc-av">&#128100;</span>
+        <span class="wc-sname">Miri</span>
+        <span class="wc-stap">Tap to pick</span>
+      </button>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="wc-step">
+      <div class="wc-step-num">2</div>
+      <div class="wc-step-txt">What do you want to ask them?</div>
+    </div>
+    <textarea class="wc-input" id="wcInput" rows="3" maxlength="200"
+      placeholder="Type your question here&#8230; (max 200 characters)"></textarea>
+
+    <!-- STEP 3 -->
+    <div class="wc-step">
+      <div class="wc-step-num">3</div>
+      <div class="wc-step-txt">Send it to the moderator!</div>
+    </div>
+    <div id="wcWaiting" style="display:none;text-align:center;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:clamp(.72rem,2.9vw,.82rem);color:rgba(245,166,35,.9);line-height:1.5;">
+      &#9203; Get your question ready!<br>The submit button unlocks when the moderator opens the wildcard round.
+    </div>
+    <!-- Countdown bar — only shown when moderator has opened the round (isLive) -->
+    <div id="wcCountdown" style="display:none;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+        <span style="font-size:clamp(.64rem,2.6vw,.74rem);color:rgba(255,255,255,.5);">Time to submit</span>
+        <span id="wcTimerLbl" style="font-size:clamp(.72rem,2.9vw,.82rem);font-weight:700;color:var(--gold);"></span>
+      </div>
+      <div style="height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;">
+        <div id="wcTimerBar" style="height:100%;background:linear-gradient(90deg,var(--gold),#E65100);border-radius:3px;transition:width .9s linear;width:100%;"></div>
+      </div>
+    </div>
+    <button class="wc-send" id="wcSend" onclick="sendWildcard()">
+      &#9654; Submit My Question
+    </button>
+    <div class="wc-done" id="wcDone">&#10003; Sent! The moderator will pick the best question &mdash; watch the screen.</div>
+
+  </div>
+</div>
+
+<!-- POLL -->
+<div class="poll-overlay" id="pollOverlay">
+  <div class="poll-sheet">
+    <div class="ps-title">&#9670; Quick Poll</div>
+    <div class="ps-q"    id="psQ"></div>
+    <div class="ps-opts" id="psOpts"></div>
+    <div class="ps-done" id="psDone">&#10003; Vote sent! Watch the screen.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script>
+// ── MQTT ──────────────────────────────────────────────────────────────────
+const ROOM   = 'pc-bingo-sap-2026-xk7';
+const BROKER = 'wss://broker.emqx.io:8084/mqtt';
+const T      = k => `${ROOM}/${k}`;
+let mqtt_c = null, mqttOk = false;
+
+function mqttConnect() {
+  const id = 'aud-' + Math.random().toString(36).slice(2,9);
+  mqtt_c = mqtt.connect(BROKER, { clientId:id, clean:true, reconnectPeriod:3000 });
+  mqtt_c.on('connect', () => { mqttOk=true; conn('ok'); mqtt_c.subscribe([T('state')]); });
+  mqtt_c.on('reconnect', () => conn('wait'));
+  mqtt_c.on('error',     () => conn('wait'));
+  mqtt_c.on('offline',   () => conn('wait'));
+  mqtt_c.on('message',   (topic, buf) => {
+    try { if (topic===T('state')) applyState(JSON.parse(buf.toString())); } catch(e) {}
+  });
+}
+function pub(k,v) { if (!mqttOk) return; mqtt_c.publish(T(k), JSON.stringify(v), {qos:1}); }
+function conn(s) {
+  const el = document.getElementById('connBadge');
+  el.className = 'conn ' + (s==='ok' ? 'conn-ok' : 'conn-wait');
+  el.textContent = s==='ok' ? '\u25CF Live' : 'Connecting\u2026';
+}
+
+// ── DATA ──────────────────────────────────────────────────────────────────
+const GRID = [
+  { cat:'org',  lbl:'Jobs Redesigned',              sub:'Before automation?',    ico:'\u{1F3D7}',  col:'B' },
+  { cat:'ai',   lbl:'AI at Work',                   sub:'Boost or challenge?',   ico:'\u{1F916}',  col:'I' },
+  { cat:'fun',  lbl:'Rise \u0026 Grow with SAP',    sub:'Your career journey',   ico:'\u{1F331}',  col:'N', vis:'c-skil' },
+  { cat:'lead', lbl:'Data vs Instinct',              sub:'Which leads?',          ico:'\u{1F9ED}',  col:'G' },
+  { cat:'skil', lbl:'Top Skill',                     sub:'AI-shaped world',       ico:'\u2B50',     col:'O' },
+  { cat:'fun',  lbl:'Christian Klein',               sub:"SAP's road ahead",      ico:'\u{1F454}',  col:'B', vis:'c-lead' },
+  { cat:'ai',   lbl:'Never Delegate',                sub:'What stays human?',     ico:'\u{1F49B}',  col:'I' },
+  { cat:'cult', lbl:'Culture Wins',                  sub:'Over technology?',      ico:'\u{1F30D}',  col:'N' },
+  { cat:'skil', lbl:'Upskilling',                    sub:'Part of the job?',      ico:'\u{1F4DA}',  col:'O' },
+  { cat:'fun',  lbl:'Game Changer',                  sub:'Name one this year',    ico:'\u26A1',     col:'G', vis:'c-ai'  },
+];
+const CLS = { org:'c-org', ai:'c-ai', cult:'c-cult', lead:'c-lead', skil:'c-skil', fun:'c-fun' };
+
+// ── PLAYER + SHUFFLED CARD ────────────────────────────────────────────
+let playerName = sessionStorage.getItem('bingo-name') || '';
+let cardSeed   = sessionStorage.getItem('bingo-seed') || '';
+let CARD = []; // CARD[visualPos] = actual GRID index
+
+function seededShuffle(arr, seedStr) {
+  let s = 0;
+  for (let i = 0; i < seedStr.length; i++)
+    s = (Math.imul(s, 31) + seedStr.charCodeAt(i)) | 0;
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    s = (Math.imul(s, 1664525) + 1013904223) | 0;
+    const j = Math.abs(s) % (i + 1);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startGame() {
+  const v = document.getElementById('nameInput').value.trim();
+  playerName = v || 'Guest-' + Math.random().toString(36).slice(2,6).toUpperCase();
+  if (!cardSeed) cardSeed = playerName + '-' + Date.now().toString(36);
+  sessionStorage.setItem('bingo-name', playerName);
+  sessionStorage.setItem('bingo-seed', cardSeed);
+  CARD = seededShuffle([0,1,2,3,4,5,6,7,8,9], cardSeed);
+  document.getElementById('nameOverlay').classList.add('hidden');
+  renderGrid();
+  mqttConnect();
+}
+
+function claimBingo() {
+  pub('bingo/claim', { name: playerName, ts: Date.now() });
+  document.getElementById('bcBtn').disabled = true;
+  document.getElementById('bcClaimed').classList.add('show');
+  toast('\u{1F3C6} Claimed! Good luck, ' + playerName + '!');
+}
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+// myVoteIdx = grid index of the cell they tapped this round (for gold glow + mark target)
+// myVoteCat = category they voted for this round (to match against covered)
+// coveredSeen = categories already processed (prevents double-marking on reconnect)
+let marked=new Set(), myVoteIdx=null, myVoteCat=null, coveredSeen=new Set();
+function saveMarked()    { sessionStorage.setItem('bingo-marked',   JSON.stringify([...marked])); }
+function saveCovered()   { sessionStorage.setItem('bingo-covered',  JSON.stringify([...coveredSeen])); }
+let pollVote=null, wcSpeaker=null, wcSent=false, lastRound=-1, lastQid=-1, liveCounts={};
+
+function boot() {
+  if (playerName && cardSeed) {
+    CARD = seededShuffle([0,1,2,3,4,5,6,7,8,9], cardSeed);
+    // Restore persisted marks so a refresh doesn't wipe the card
+    try { marked = new Set(JSON.parse(sessionStorage.getItem('bingo-marked') || '[]')); } catch(e){}
+    try { coveredSeen = new Set(JSON.parse(sessionStorage.getItem('bingo-covered') || '[]')); } catch(e){}
+    document.getElementById('nameOverlay').classList.add('hidden');
+    renderGrid();
+    mqttConnect();
+  }
+  // else: name overlay stays visible until startGame() is called
+}
+
+function leadingCat() {
+  let top=null, val=0;
+  Object.entries(liveCounts).forEach(([k,v]) => { if (v>val) { val=v; top=k; } });
+  return val>0 ? top : null;
+}
+
+function renderGrid() {
+  if (!CARD.length) return;
+  const hasVoted = myVoteIdx !== null;
+  document.getElementById('bgrid').innerHTML = CARD.map((gridIdx, vp) => {
+    const c = GRID[gridIdx];
+    const isMarked  = marked.has(gridIdx);
+    const isLeading = myVoteIdx === gridIdx && !isMarked;
+    const isDimmed  = hasVoted && !isLeading && !isMarked;
+    let cls = `cell ${c.vis || CLS[c.cat] || 'c-org'}`;
+    if (isMarked)  cls += ' marked';
+    if (isLeading) cls += ' leading';
+    if (isDimmed)  cls += ' dimmed';
+    return `<div class="${cls}" onclick="tap(${vp})">
+      <div class="mile"></div>
+      <div class="ico">${c.ico}</div>
+      <div class="lbl">${c.lbl}</div>
+      <div class="sub">${c.sub}</div>
+      <div class="cell-lock"></div>
+    </div>`;
+  }).join('');
+}
+
+function tap(vp) {
+  if (!CARD.length) return;
+  const gridIdx = CARD[vp];
+  const c = GRID[gridIdx];
+  if (marked.has(gridIdx)) { toast('\u2714 Already marked!'); return; }
+  if (myVoteIdx !== null)  { toast('Already voted this round!'); return; }
+  myVoteIdx = gridIdx;
+  myVoteCat = c.cat;
+  pub('vote', { cat: c.cat });
+  renderGrid();
+  // Wildcard cell — open the submission sheet immediately so they can type their question
+  if (c.cat === 'fun') {
+    showWildcard();
+  } else {
+    toast('\u2714 Voted \u2014 gold glow = your pick!');
+  }
+}
+
+function checkBingo() {
+  if (!CARD.length) return;
+  // Win = full row only (5 cells). Columns (2 cells) are too easy and cause false positives.
+  const lines = [[0,1,2,3,4],[5,6,7,8,9]];
+  for (const line of lines) {
+    if (line.every(vp => marked.has(CARD[vp]))) {
+      document.getElementById('bingoClaimOv').classList.add('show');
+      return;
+    }
+  }
+}
+
+function applyState(st) {
+  // 1. Process covered FIRST — before votes are wiped — so vote matching works
+  if (st.covered) {
+    Object.keys(st.covered).forEach(cat => {
+      if (!coveredSeen.has(cat)) {
+        coveredSeen.add(cat);
+        if (myVoteCat === cat && myVoteIdx !== null) {
+          marked.add(myVoteIdx);
+          saveMarked();
+          toast('\u2705 Your pick was called \u2014 cell marked!');
+          checkBingo();
+        }
+      }
+    });
+    saveCovered();
+  }
+
+  // 2. On new question (qid advances) — reset this round's vote
+  if (st.qid !== undefined && st.qid !== lastQid) {
+    lastQid = st.qid;
+    myVoteIdx = null; myVoteCat = null;
+  }
+
+  // 3. On full game reset (round resets) — wipe marks and all state
+  if (st.round !== undefined && st.round !== lastRound) {
+    lastRound = st.round;
+    if (st.round === 0) {
+      // Explicit reset to 0 = fresh game
+      marked = new Set(); coveredSeen = new Set();
+      sessionStorage.removeItem('bingo-marked');
+      sessionStorage.removeItem('bingo-covered');
+    }
+    myVoteIdx = null; myVoteCat = null; pollVote = null;
+    wcSpeaker = null; wcSent = false; liveCounts = {};
+    document.getElementById('bingoBanner').classList.remove('show');
+    document.getElementById('bingoClaimOv').classList.remove('show');
+    document.getElementById('bcClaimed').classList.remove('show');
+    const bcBtn = document.getElementById('bcBtn');
+    if (bcBtn) bcBtn.disabled = false;
+    document.getElementById('psDone').classList.remove('show');
+    document.getElementById('pollOverlay').classList.remove('show');
+    document.getElementById('wildcardOverlay').classList.remove('show');
+  }
+
+  if (st.counts) liveCounts = st.counts;
+  renderGrid();
+  const banner = document.getElementById('stageBanner');
+  if (st.question) {
+    document.getElementById('stageText').textContent = st.question.text;
+    document.getElementById('stageLdr').textContent  = '\u25BA ' + st.question.leader;
+    banner.classList.add('show');
+  } else { banner.classList.remove('show'); }
+  if (st.poll) showPoll(st.poll);
+  else document.getElementById('pollOverlay').classList.remove('show');
+  if (st.wildcard) showWildcard(true);
+  else { document.getElementById('wildcardOverlay').classList.remove('show'); clearInterval(wcCountdownIv); }
+}
+
+function showPoll(poll) {
+  document.getElementById('psQ').textContent = poll.question;
+  document.getElementById('psOpts').innerHTML = Object.entries(poll.answers).map(([k,v]) =>
+    `<button class="ps-opt${pollVote===k?' picked':''}" onclick="votePoll('${k}','${poll.cat}')">${v.label}</button>`
+  ).join('');
+  document.getElementById('psDone').classList.toggle('show', !!pollVote);
+  document.getElementById('pollOverlay').classList.add('show');
+}
+function votePoll(key, cat) {
+  if (pollVote) { toast('Already voted!'); return; }
+  pollVote = key;
+  pub('poll/answer', { opt:key, cat });
+  document.querySelectorAll('.ps-opt').forEach(b => b.classList.remove('picked'));
+  document.querySelector(`.ps-opt[onclick*="'${key}'"]`)?.classList.add('picked');
+  document.getElementById('psDone').classList.add('show');
+  toast('\u2714 Poll vote sent!');
+}
+
+let wcCountdownIv = null;
+function showWildcard(isLive) {
+  if (wcSent) return;
+  document.getElementById('wcInput').value = '';
+  document.getElementById('wcDone').classList.remove('show');
+  document.getElementById('wcSend').disabled = !isLive;
+  wcSpeaker = null;
+  document.querySelectorAll('.wc-speaker').forEach(b => b.classList.remove('picked'));
+  const hint = document.getElementById('wcWaiting');
+  if (hint) hint.style.display = isLive ? 'none' : 'block';
+  // Countdown bar — only start when moderator officially opens the round
+  const cdBox = document.getElementById('wcCountdown');
+  if (isLive) {
+    cdBox.style.display = 'block';
+    startWcCountdown(45);
+  } else {
+    cdBox.style.display = 'none';
+    clearInterval(wcCountdownIv);
+  }
+  document.getElementById('wildcardOverlay').classList.add('show');
+}
+function startWcCountdown(total) {
+  clearInterval(wcCountdownIv);
+  let left = total;
+  const bar = document.getElementById('wcTimerBar');
+  const lbl = document.getElementById('wcTimerLbl');
+  function tick() {
+    lbl.textContent = left + 's';
+    bar.style.width = (left / total * 100) + '%';
+    bar.style.background = left <= 10
+      ? 'linear-gradient(90deg,#E53935,#B71C1C)'
+      : 'linear-gradient(90deg,var(--gold),#E65100)';
+    if (left <= 0) { clearInterval(wcCountdownIv); lbl.textContent = 'Time\'s up!'; bar.style.width='0%'; }
+    left--;
+  }
+  tick();
+  wcCountdownIv = setInterval(tick, 1000);
+}
+function pickSpeaker(name) {
+  wcSpeaker = name;
+  document.querySelectorAll('.wc-speaker').forEach(b => {
+    const isMe = b.querySelector('.wc-sname').textContent.trim() === name;
+    b.classList.toggle('picked', isMe);
+  });
+  // Move focus to the question box so keyboard appears immediately
+  document.getElementById('wcInput').focus();
+}
+function sendWildcard() {
+  const text = document.getElementById('wcInput').value.trim();
+  if (!wcSpeaker) { toast('Pick a panelist first!'); return; }
+  if (text.length < 3) { toast('Type a question first!'); return; }
+  pub('aud/question', { text, from:wcSpeaker });
+  wcSent = true;
+  document.getElementById('wcSend').disabled = true;
+  document.getElementById('wcDone').classList.add('show');
+  toast('\u2714 Question sent to ' + wcSpeaker + '!');
+  // Return to bingo card automatically after a short delay
+  setTimeout(() => {
+    document.getElementById('wildcardOverlay').classList.remove('show');
+  }, 1800);
+}
+
+let _t;
+function toast(m) {
+  const e=document.getElementById('toast'); e.textContent=m;
+  e.classList.add('show'); clearTimeout(_t);
+  _t=setTimeout(()=>e.classList.remove('show'),2600);
+}
+
+boot();
+</script>
+</body>
+</html>
