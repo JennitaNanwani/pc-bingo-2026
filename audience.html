@@ -496,6 +496,78 @@ header::after {
   color:#69f0ae; font-weight:700;
 }
 .bc-claimed.show { display:block; }
+
+/* ── CELEBRATION OVERLAY ─────────────────────────────────────────────── */
+.celeb-overlay {
+  display:none; position:fixed; inset:0; z-index:1200;
+  background:linear-gradient(160deg,#00144A 0%,#0A1628 50%,#1a003a 100%);
+  align-items:center; justify-content:center; flex-direction:column;
+  text-align:center; padding:32px 20px;
+}
+.celeb-overlay.show { display:flex; }
+.celeb-bingo {
+  display:flex; gap:clamp(10px,4vw,22px); margin-bottom:28px;
+}
+.celeb-bingo span {
+  font-size:clamp(2.8rem,13vw,5.5rem); font-weight:900; line-height:1;
+  color:var(--gold);
+  text-shadow:0 0 24px rgba(245,166,35,.9),0 0 48px rgba(245,166,35,.4);
+  animation:celebPop .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+.celeb-bingo span:nth-child(1){animation-delay:.05s}
+.celeb-bingo span:nth-child(2){animation-delay:.15s}
+.celeb-bingo span:nth-child(3){animation-delay:.25s}
+.celeb-bingo span:nth-child(4){animation-delay:.35s}
+.celeb-bingo span:nth-child(5){animation-delay:.45s}
+@keyframes celebPop {
+  from{transform:scale(0) rotate(-18deg);opacity:0}
+  to  {transform:scale(1) rotate(0deg);  opacity:1}
+}
+.celeb-headline {
+  font-size:clamp(1.15rem,5vw,1.8rem); font-weight:700; color:#fff;
+  margin-bottom:10px; line-height:1.3;
+}
+.celeb-sub {
+  font-size:clamp(.78rem,3.2vw,.96rem); color:rgba(255,255,255,.55); line-height:1.5;
+  margin-bottom:16px;
+}
+/* Session recap cards */
+.celeb-recap {
+  width:100%; max-width:440px;
+  max-height:44vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
+  display:flex; flex-direction:column; gap:8px;
+  margin-bottom:20px;
+}
+.celeb-item {
+  display:flex; align-items:flex-start; gap:12px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  border-left:3px solid var(--gold);
+  border-radius:10px; padding:10px 14px; text-align:left;
+}
+.celeb-item-ico { font-size:1.15rem; line-height:1; flex-shrink:0; margin-top:2px; }
+.celeb-item-cat {
+  font-size:.52rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--gold); margin-bottom:3px;
+}
+.celeb-item-q {
+  font-size:clamp(.7rem,2.8vw,.82rem); color:rgba(255,255,255,.88); line-height:1.45;
+}
+.celeb-thanks {
+  font-size:clamp(.82rem,3.4vw,1rem); font-weight:600; color:rgba(255,255,255,.7);
+  margin-bottom:6px;
+}
+  margin-top:28px; font-size:clamp(.64rem,2.6vw,.76rem);
+  letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.25);
+}
+/* Confetti pieces */
+@keyframes cfFall {
+  to { transform:translateY(110vh) rotate(720deg); opacity:0; }
+}
+.cf {
+  position:fixed; top:-24px; border-radius:2px;
+  animation:cfFall linear forwards; pointer-events:none; z-index:1300;
+}
 </style>
 </head>
 <body>
@@ -699,6 +771,18 @@ header::after {
   </div>
 </div>
 
+<!-- CELEBRATION OVERLAY -->
+<div class="celeb-overlay" id="celebOverlay">
+  <div class="celeb-bingo">
+    <span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>
+  </div>
+  <div class="celeb-headline">What a session!</div>
+  <div class="celeb-sub">Here is what we explored today:</div>
+  <div class="celeb-recap" id="celebRecap"></div>
+  <div class="celeb-thanks">Thank you for joining us.</div>
+  <div class="celeb-road">&#9632; SAP &nbsp;·&nbsp; People &amp; Culture &nbsp;·&nbsp; 2026</div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
@@ -800,7 +884,7 @@ function claimBingo() {
 let marked=new Set(), myVoteIdx=null, myVoteCat=null, coveredSeen=new Set();
 function saveMarked()    { sessionStorage.setItem('bingo-marked',   JSON.stringify([...marked])); }
 function saveCovered()   { sessionStorage.setItem('bingo-covered',  JSON.stringify([...coveredSeen])); }
-let pollVote=null, pollShownQ=null, pollDismissed=false, lastRound=-1, lastQid=-1, liveCounts={};
+let pollVote=null, pollShownQ=null, pollDismissed=false, lastRound=-1, lastQid=-1, liveCounts={}, celebLaunched=false;
 
 function boot() {
   if (playerName) {
@@ -949,6 +1033,11 @@ function applyState(st) {
     if (st.poll) showPoll(st.poll);
     else document.getElementById('pollOverlay').classList.remove('show');
   }
+  // Celebration — non-retained live broadcast from moderator's final spin
+  if (st.celebration && !celebLaunched) {
+    celebLaunched = true;
+    launchCelebration(st.covered);
+  }
 }
 
 function showPoll(poll) {
@@ -982,6 +1071,58 @@ function votePoll(key, cat) {
   toast('\u2714 Poll vote sent!');
 }
 
+
+// ── CELEBRATION ────────────────────────────────────────────────────────
+const CAT_META = {
+  org:  { label:'Organization',    ico:'\u{1F3D7}' },
+  ai:   { label:'AI',              ico:'\u{1F916}' },
+  cult: { label:'Culture',         ico:'\u{1F30D}' },
+  lead: { label:'Leadership',      ico:'\u{1F9ED}' },
+  skil: { label:'Learning/Skills', ico:'\u{1F4DA}' },
+};
+
+function sprayConfetti() {
+  const colors = ['#E91E8C','#F5A623','#0070F2','#00897B','#FFD700','#FF5252','#ffffff'];
+  for (let i = 0; i < 100; i++) {
+    const el = document.createElement('div');
+    el.className = 'cf';
+    const size = 4 + Math.random() * 9;
+    el.style.cssText = [
+      'left:'   + (Math.random() * 100) + 'vw',
+      'width:'  + size + 'px',
+      'height:' + (size * 1.6) + 'px',
+      'background:' + colors[Math.floor(Math.random() * colors.length)],
+      'animation-duration:' + (2.4 + Math.random() * 2.2) + 's',
+      'animation-delay:'    + (Math.random() * 1.4) + 's',
+      'transform:rotate(' + (Math.random() * 360) + 'deg)',
+      'border-radius:' + (Math.random() > .5 ? '50%' : '2px'),
+    ].join(';');
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 6000);
+  }
+}
+function launchCelebration(covered) {
+  // Build a recap of every question actually discussed this session
+  const order = ['org', 'ai', 'cult', 'skil', 'lead'];
+  const items = order
+    .filter(cat => covered && covered[cat] && covered[cat].q)
+    .map(cat => {
+      const m = CAT_META[cat];
+      return `<div class="celeb-item">
+        <span class="celeb-item-ico">${m.ico}</span>
+        <div>
+          <div class="celeb-item-cat">${m.label}</div>
+          <div class="celeb-item-q">${covered[cat].q}</div>
+        </div>
+      </div>`;
+    }).join('');
+  if (items) document.getElementById('celebRecap').innerHTML = items;
+
+  document.getElementById('celebOverlay').classList.add('show');
+  sprayConfetti();
+  setTimeout(sprayConfetti, 900);
+  setTimeout(sprayConfetti, 1900);
+}
 
 let _t;
 function toast(m) {
