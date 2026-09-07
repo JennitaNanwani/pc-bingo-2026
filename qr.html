@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>P&C Transformation on the Road 2026 — Join</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=72:wght@400;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #00144A;
+    font-family: '72', 'Arial', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 40px 32px 36px;
+    width: 100%;
+    max-width: 520px;
+  }
+
+  /* SAP Logo */
+  .sap-logo {
+    width: 120px;
+    height: auto;
+  }
+
+  /* Title block */
+  .title-block {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .title-block h1 {
+    color: #FFFFFF;
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+
+  .title-block .subtitle {
+    color: #4CB1FF;
+    font-size: clamp(14px, 2.2vw, 18px);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+
+  /* QR card */
+  .qr-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+  }
+
+  #qrcode canvas,
+  #qrcode img {
+    display: block;
+    border-radius: 4px;
+  }
+
+  /* Bottom label */
+  .scan-label {
+    color: rgba(255,255,255,0.82);
+    font-size: clamp(14px, 2vw, 18px);
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    text-align: center;
+  }
+
+  /* Top accent bar */
+  .top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0070F2 0%, #4CB1FF 100%);
+  }
+
+  /* Bottom accent bar */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0070F2 0%, #4CB1FF 100%);
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar"></div>
+<div class="bottom-bar"></div>
+
+<div class="page">
+
+  <!-- SAP Logo -->
+  <svg class="sap-logo" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)">
+        <stop offset="0" stop-color="#00B8F1"/>
+        <stop offset="0.02" stop-color="#01B6F0"/>
+        <stop offset="0.31" stop-color="#0D90D9"/>
+        <stop offset="0.58" stop-color="#1775C8"/>
+        <stop offset="0.82" stop-color="#1C65BF"/>
+        <stop offset="1" stop-color="#1E5FBB"/>
+      </linearGradient>
+    </defs>
+    <polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/>
+    <path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72
+      c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8
+      c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13
+      c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1
+      c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2
+      l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3
+      l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1
+      C268.5,93.7,259,97.6,247.1,97.7"/>
+  </svg>
+
+  <!-- Title -->
+  <div class="title-block">
+    <h1>P&amp;C Transformation on the Road 2026</h1>
+    <div class="subtitle">People &amp; Culture &nbsp;·&nbsp; Bingo 2026</div>
+  </div>
+
+  <!-- QR Code -->
+  <div class="qr-card">
+    <div id="qrcode"></div>
+  </div>
+
+  <!-- Scan label -->
+  <div class="scan-label">Scan to join the game</div>
+
+</div>
+
+<script>
+  new QRCode(document.getElementById('qrcode'), {
+    text: 'https://JennitaNanwani.github.io/pc-bingo-2026/audience.html',
+    width: 260,
+    height: 260,
+    colorDark: '#00144A',
+    colorLight: '#FFFFFF',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+</script>
+</body>
+</html>
