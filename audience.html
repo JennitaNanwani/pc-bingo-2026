@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0090)file:///C:/Users/I079066/Desktop/Bingo/audience%20html%20P&C%20on%20the%20Road%202026.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>P&amp;C on the Road 2026</title>
 <style>
@@ -114,19 +114,19 @@ header::after {
 }
 /* Circular location-pin head */
 .pin-head {
-  width: clamp(38px,9.5vw,52px);
-  height: clamp(38px,9.5vw,52px);
-  border-radius:50%;
+  width: clamp(44px,12vw,72px);
+  height: clamp(22px,5.5vw,30px);
+  border-radius:20px;
   background:linear-gradient(135deg,var(--pink),var(--pink2));
   display:flex; align-items:center; justify-content:center;
-  box-shadow:0 0 0 3px rgba(233,30,140,.22), 0 6px 18px rgba(233,30,140,.4);
-  position:relative; z-index:2;
+  box-shadow:0 0 0 2px rgba(233,30,140,.22), 0 4px 12px rgba(233,30,140,.4);
+  position:relative; z-index:2; padding:0 6px;
 }
 .pin-letter {
-  font-size:clamp(1.1rem,4.4vw,1.55rem);
-  font-weight:700; color:#fff;
-  text-shadow:0 1px 5px rgba(0,0,0,.55);
-  line-height:1;
+  font-size:clamp(.52rem,2.1vw,.72rem);
+  font-weight:700; color:#fff; font-family:'72','Segoe UI',Arial,sans-serif;
+  text-shadow:0 1px 3px rgba(0,0,0,.55);
+  line-height:1; white-space:nowrap;
 }
 /* Triangle tail pointing down to road */
 .pin-tail {
@@ -173,18 +173,7 @@ header::after {
 }
 
 /* ── Category labels — sit below road ── */
-.cats-row {
-  display:grid; grid-template-columns:repeat(5,1fr); gap:6px;
-  padding-top:5px;
-  position:relative; z-index:3;
-}
-.cat-label {
-  text-align:center;
-  font-size:clamp(.58rem,2.3vw,.76rem);
-  font-weight:700; color:rgba(255,255,255,.7);
-  text-transform:uppercase; letter-spacing:.5px;
-  line-height:1;
-}
+.cats-row { display:none; }
 
 /* ═════════════════════════════════════════════════════════════════════
    BINGO GRID
@@ -231,15 +220,15 @@ header::after {
 .cell:active { transform:scale(.88); }
 
 .cell .ico {
-  font-size:clamp(1.25rem,5vw,1.85rem); line-height:1;
+  display:none;
 }
 .cell .lbl {
-  font-size:clamp(.78rem,3.2vw,1rem);
-  font-weight:700; color:#00144A; line-height:1.25;
+  font-size:clamp(.58rem,2.3vw,.76rem);
+  font-weight:700; color:#00144A; line-height:1.2; font-family:'72','Segoe UI',Arial,sans-serif;
 }
 .cell .sub {
-  font-size:clamp(.6rem,2.4vw,.77rem);
-  color:rgba(0,20,74,.48); line-height:1.2;
+  font-size:clamp(.48rem,1.9vw,.62rem);
+  color:rgba(0,20,74,.48); line-height:1.15; font-family:'72','Segoe UI',Arial,sans-serif;
 }
 
 /* Category accent colours — richer for white card contrast */
@@ -447,6 +436,7 @@ header::after {
   border:1px solid rgba(255,255,255,.1); border-top:3px solid var(--gold);
   border-radius:20px 20px 0 0; padding:20px 18px 44px;
   width:100%; max-width:420px;
+  max-height:88vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
   animation:sheetUp .32s cubic-bezier(.34,1.56,.64,1);
 }
 /* Header block */
@@ -603,49 +593,52 @@ header::after {
       <div class="hd-marks"><i></i><i></i><i></i></div>
       P&amp;C Transformation on the Road 2026
     </div>
-    <div class="hd-sub">Tap a cell to vote &nbsp;&middot;&nbsp; If your topic gets called, it marks &nbsp;&middot;&nbsp; 4 in a row = BINGO</div>
+    <div class="hd-sub">Tap a cell to vote &nbsp;·&nbsp; If your topic gets called, it marks &nbsp;·&nbsp; 4 in a row = BINGO</div>
   </div>
-  <span class="conn conn-wait" id="connBadge">Connecting&hellip;</span>
+  <span class="conn conn-ok" id="connBadge">● Live</span>
 </header>
 
 <!-- On-stage banner -->
 <div class="stage-banner" id="stageBanner">
-  <div class="sb-label">&#9654; On Stage Now</div>
-  <div class="sb-text"   id="stageText"></div>
+  <div class="sb-label">▶ On Stage Now</div>
+  <div class="sb-text" id="stageText"></div>
   <div class="sb-leader" id="stageLdr"></div>
 </div>
 
 <!-- Instructions -->
 <div class="instr">
-  <strong>Tap a cell</strong> to vote for that topic &nbsp;&bull;&nbsp; <strong>If it gets called, it marks!</strong><br>
-  <span class="instr-note">Gold glow = your vote this round &nbsp;&middot;&nbsp; One vote per round</span>
+  <strong>Tap a cell</strong> to vote for that topic &nbsp;•&nbsp; <strong>If it gets called, it marks!</strong><br>
+  <span class="instr-note">Gold glow = your vote this round &nbsp;·&nbsp; One vote per round</span>
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════
      ROADMAP — location pins above road, category labels below
 ════════════════════════════════════════════════════════════════════ -->
+<div style="text-align:center;padding:4px 0 1px;flex-shrink:0;">
+  <span style="font-size:clamp(.52rem,2vw,.62rem);font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.3);font-family:&#39;72&#39;,&#39;Segoe UI&#39;,Arial,sans-serif;">B &nbsp; I &nbsp; N &nbsp; G &nbsp; O</span>
+</div>
 <div class="roadmap-wrap">
 
   <!-- 5 location pins — one per BINGO column -->
   <div class="pins-row">
     <div class="pin-item">
-      <div class="pin-head"><span class="pin-letter">B</span></div>
+      <div class="pin-head"><span class="pin-letter">Organization</span></div>
       <div class="pin-tail"></div>
     </div>
     <div class="pin-item">
-      <div class="pin-head"><span class="pin-letter">I</span></div>
+      <div class="pin-head"><span class="pin-letter">AI</span></div>
       <div class="pin-tail"></div>
     </div>
     <div class="pin-item">
-      <div class="pin-head"><span class="pin-letter">N</span></div>
+      <div class="pin-head"><span class="pin-letter">Culture</span></div>
       <div class="pin-tail"></div>
     </div>
     <div class="pin-item">
-      <div class="pin-head"><span class="pin-letter">G</span></div>
+      <div class="pin-head"><span class="pin-letter">Leadership</span></div>
       <div class="pin-tail"></div>
     </div>
     <div class="pin-item">
-      <div class="pin-head"><span class="pin-letter">O</span></div>
+      <div class="pin-head"><span class="pin-letter">Learning</span></div>
       <div class="pin-tail"></div>
     </div>
   </div>
@@ -665,28 +658,117 @@ header::after {
 </div>
 
 <!-- ── BINGO GRID ── -->
-<div class="bgrid" id="bgrid"></div>
+<div class="bgrid" id="bgrid"><div class="cell c-org" onclick="tap(0)">
+      <div class="mile"></div>
+      <div class="ico">🏗</div>
+      <div class="lbl">Is HR from industry perspective moving to a model like that of Product Pod Teams?</div>
+      <div class="sub">Organization</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-ai" onclick="tap(1)">
+      <div class="mile"></div>
+      <div class="ico">🤖</div>
+      <div class="lbl">How does AI look in P&amp;C Practice?</div>
+      <div class="sub">AI</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-cult" onclick="tap(2)">
+      <div class="mile"></div>
+      <div class="ico">🌍</div>
+      <div class="lbl">What's the biggest mindset shift still holding P&amp;C back?</div>
+      <div class="sub">Culture</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-lead" onclick="tap(3)">
+      <div class="mile"></div>
+      <div class="ico">🧭</div>
+      <div class="lbl">Leading with Data or Leading with Instinct?</div>
+      <div class="sub">Leadership</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-skil" onclick="tap(4)">
+      <div class="mile"></div>
+      <div class="ico">📚</div>
+      <div class="lbl">Missing learning time: How do we make upskilling part of the job, not an extra task?</div>
+      <div class="sub">Learning/Skills</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-org" onclick="tap(5)">
+      <div class="mile"></div>
+      <div class="ico">🏗</div>
+      <div class="lbl">Most jobs in P&amp;C will be fundamentally redesigned before they are automated.</div>
+      <div class="sub">Organization</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-ai" onclick="tap(6)">
+      <div class="mile"></div>
+      <div class="ico">🤖</div>
+      <div class="lbl">What work should never be delegated to AI?</div>
+      <div class="sub">AI</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-cult" onclick="tap(7)">
+      <div class="mile"></div>
+      <div class="ico">🌍</div>
+      <div class="lbl">The future competitive advantage of organizations will be culture, not technology.</div>
+      <div class="sub">Culture</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-lead" onclick="tap(8)">
+      <div class="mile"></div>
+      <div class="ico">🧭</div>
+      <div class="lbl">AI &amp; Leadership: Superpower or Blind Spot?</div>
+      <div class="sub">Leadership</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-skil" onclick="tap(9)">
+      <div class="mile"></div>
+      <div class="ico">📚</div>
+      <div class="lbl">What skills will matter most in an AI-first P&amp;C organization?</div>
+      <div class="sub">Learning/Skills</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-org" onclick="tap(10)">
+      <div class="mile"></div>
+      <div class="ico">🏗</div>
+      <div class="lbl">Organizations should hire for learning agility and AI fluency ahead of experience and tenure.</div>
+      <div class="sub">Organization</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-ai" onclick="tap(11)">
+      <div class="mile"></div>
+      <div class="ico">🤖</div>
+      <div class="lbl">AI at Work: Efficiency Boost or Human Connection Challenge?</div>
+      <div class="sub">AI</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-cult" onclick="tap(12)">
+      <div class="mile"></div>
+      <div class="ico">🌍</div>
+      <div class="lbl">How should P&amp;C redefine collaboration in an AI-first world?</div>
+      <div class="sub">Culture</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-lead" onclick="tap(13)">
+      <div class="mile"></div>
+      <div class="ico">🧭</div>
+      <div class="lbl">As a leader I don't need to be an AI expert, as I have a team of AI experts. Right or false?</div>
+      <div class="sub">Leadership</div>
+      <div class="cell-lock"></div>
+    </div><div class="cell c-skil" onclick="tap(14)">
+      <div class="mile"></div>
+      <div class="ico">📚</div>
+      <div class="lbl">What's the most relevant leadership skill in an AI-shaped world?</div>
+      <div class="sub">Learning/Skills</div>
+      <div class="cell-lock"></div>
+    </div></div>
 
 <div class="bingo-banner" id="bingoBanner">
   BINGO!
-  <span class="bn-sub">Raise your hand! &#9996;</span>
+  <span class="bn-sub">Raise your hand! ✌</span>
 </div>
 
 <!-- Name entry -->
-<div class="name-overlay" id="nameOverlay">
-  <div class="name-ol-title">&#187; P&amp;C Bingo 2026</div>
+<div class="name-overlay hidden" id="nameOverlay">
+  <div class="name-ol-title">» P&amp;C Bingo 2026</div>
   <div class="name-ol-sub">Enter your first name to get your card.<br>Every card is different — good luck!</div>
-  <input class="name-ol-input" id="nameInput" placeholder="Your first name" maxlength="30" autocomplete="off"
-    onkeydown="if(event.key==='Enter')startGame()">
-  <button class="name-ol-btn" onclick="startGame()">Get My Card &#8594;</button>
+  <input class="name-ol-input" id="nameInput" placeholder="Your first name" maxlength="30" autocomplete="off" onkeydown="if(event.key===&#39;Enter&#39;)startGame()">
+  <button class="name-ol-btn" onclick="startGame()">Get My Card →</button>
 </div>
 
 <!-- BINGO claim -->
 <div class="bingo-claim-ov" id="bingoClaimOv">
-  <div class="bc-title">BINGO! &#127881;</div>
+  <div class="bc-title">BINGO! 🎉</div>
   <div class="bc-sub">You completed a row!<br>Tap below to officially claim your win.</div>
-  <button class="bc-btn" id="bcBtn" onclick="claimBingo()">&#127942; CLAIM BINGO!</button>
-  <div class="bc-claimed" id="bcClaimed">&#10004; Claimed! Raise your hand &mdash; the moderator will call your name.</div>
+  <button class="bc-btn" id="bcBtn" onclick="claimBingo()">🏆 CLAIM BINGO!</button>
+  <div class="bc-claimed" id="bcClaimed">✔ Claimed! Raise your hand — the moderator will call your name.</div>
 </div>
 
 <!-- WILDCARD -->
@@ -694,7 +776,7 @@ header::after {
   <div class="wc-sheet">
 
     <div class="wc-header">
-      <div class="wc-badge">&#9670; WILDCARD</div>
+      <div class="wc-badge">◆ WILDCARD</div>
       <div class="wc-headline">Your turn to ask!</div>
       <div class="wc-intro">The audience picks the question this round.<br>Follow the 3 steps below.</div>
     </div>
@@ -705,18 +787,18 @@ header::after {
       <div class="wc-step-txt">Who do you want to ask?</div>
     </div>
     <div class="wc-speakers" id="wcSpeakers">
-      <button class="wc-speaker" onclick="pickSpeaker('Christian')">
-        <span class="wc-av">&#128100;</span>
+      <button class="wc-speaker" onclick="pickSpeaker(&#39;Christian&#39;)">
+        <span class="wc-av">👤</span>
         <span class="wc-sname">Christian</span>
         <span class="wc-stap">Tap to pick</span>
       </button>
-      <button class="wc-speaker" onclick="pickSpeaker('Verena')">
-        <span class="wc-av">&#128100;</span>
+      <button class="wc-speaker" onclick="pickSpeaker(&#39;Verena&#39;)">
+        <span class="wc-av">👤</span>
         <span class="wc-sname">Verena</span>
         <span class="wc-stap">Tap to pick</span>
       </button>
-      <button class="wc-speaker" onclick="pickSpeaker('Miri')">
-        <span class="wc-av">&#128100;</span>
+      <button class="wc-speaker" onclick="pickSpeaker(&#39;Miri&#39;)">
+        <span class="wc-av">👤</span>
         <span class="wc-sname">Miri</span>
         <span class="wc-stap">Tap to pick</span>
       </button>
@@ -727,8 +809,7 @@ header::after {
       <div class="wc-step-num">2</div>
       <div class="wc-step-txt">What do you want to ask them?</div>
     </div>
-    <textarea class="wc-input" id="wcInput" rows="3" maxlength="200"
-      placeholder="Type your question here&#8230; (max 200 characters)"></textarea>
+    <textarea class="wc-input" id="wcInput" rows="3" maxlength="200" placeholder="Type your question here… (max 200 characters)"></textarea>
 
     <!-- STEP 3 -->
     <div class="wc-step">
@@ -736,7 +817,7 @@ header::after {
       <div class="wc-step-txt">Send it to the moderator!</div>
     </div>
     <div id="wcWaiting" style="display:none;text-align:center;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:clamp(.72rem,2.9vw,.82rem);color:rgba(245,166,35,.9);line-height:1.5;">
-      &#9203; Get your question ready!<br>The submit button unlocks when the moderator opens the wildcard round.
+      ⏳ Get your question ready!<br>The submit button unlocks when the moderator opens the wildcard round.
     </div>
     <!-- Countdown bar — only shown when moderator has opened the round (isLive) -->
     <div id="wcCountdown" style="display:none;margin-bottom:12px;">
@@ -749,9 +830,9 @@ header::after {
       </div>
     </div>
     <button class="wc-send" id="wcSend" onclick="sendWildcard()">
-      &#9654; Submit My Question
+      ▶ Submit My Question
     </button>
-    <div class="wc-done" id="wcDone">&#10003; Sent! The moderator will pick the best question &mdash; watch the screen.</div>
+    <div class="wc-done" id="wcDone">✓ Sent! The moderator will pick the best question — watch the screen.</div>
 
   </div>
 </div>
@@ -759,10 +840,11 @@ header::after {
 <!-- POLL -->
 <div class="poll-overlay" id="pollOverlay">
   <div class="poll-sheet">
-    <div class="ps-title">&#9670; Quick Poll</div>
-    <div class="ps-q"    id="psQ"></div>
+    <div class="ps-title">◆ Quick Poll</div>
+    <div class="ps-q" id="psQ"></div>
     <div class="ps-opts" id="psOpts"></div>
-    <div class="ps-done" id="psDone">&#10003; Vote sent! Watch the screen.</div>
+    <div class="ps-done" id="psDone">✓ Vote sent! Watch the screen.</div>
+    <button onclick="document.getElementById(&#39;pollOverlay&#39;).classList.remove(&#39;show&#39;)" style="margin-top:14px;width:100%;padding:10px;border:none;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;font-size:.9rem;cursor:pointer;">✕ Back to card</button>
   </div>
 </div>
 
@@ -774,17 +856,34 @@ header::after {
 const ROOM   = 'pc-bingo-sap-2026-xk7';
 const BROKER = 'wss://broker.emqx.io:8084/mqtt';
 const T      = k => `${ROOM}/${k}`;
-let mqtt_c = null, mqttOk = false;
+let mqtt_c = null, mqttOk = false, mqttConnectTime = 0;
 
 function mqttConnect() {
   const id = 'aud-' + Math.random().toString(36).slice(2,9);
   mqtt_c = mqtt.connect(BROKER, { clientId:id, clean:true, reconnectPeriod:3000 });
-  mqtt_c.on('connect', () => { mqttOk=true; conn('ok'); mqtt_c.subscribe([T('state')]); });
+  mqtt_c.on('connect', () => {
+    mqttOk = true;
+    mqttConnectTime = Date.now();   // record when we connected
+    conn('ok');
+    mqtt_c.subscribe([T('state')]);
+  });
   mqtt_c.on('reconnect', () => conn('wait'));
   mqtt_c.on('error',     () => conn('wait'));
   mqtt_c.on('offline',   () => conn('wait'));
-  mqtt_c.on('message',   (topic, buf) => {
-    try { if (topic===T('state')) applyState(JSON.parse(buf.toString())); } catch(e) {}
+  mqtt_c.on('message',   (topic, buf, packet) => {
+    try {
+      if (topic===T('state')) {
+        const st = JSON.parse(buf.toString());
+        // Double guard: strip wildcard from stale/retained messages.
+        // 1. MQTT retain flag (set by broker on retained delivery)
+        // 2. Time guard: retained messages arrive within ms of subscribing;
+        //    2 000 ms is well beyond that but still before any real live publish.
+        const isStale = (packet && packet.retain) ||
+                        (Date.now() - mqttConnectTime < 2000);
+        if (isStale) { st.wildcard = false; st.poll = null; }
+        applyState(st);
+      }
+    } catch(e) {}
   });
 }
 function pub(k,v) { if (!mqttOk) return; mqtt_c.publish(T(k), JSON.stringify(v), {qos:1}); }
@@ -796,16 +895,21 @@ function conn(s) {
 
 // ── DATA ──────────────────────────────────────────────────────────────────
 const GRID = [
-  { cat:'org',  lbl:'Jobs Redesigned',              sub:'Before automation?',    ico:'\u{1F3D7}',  col:'B' },
-  { cat:'ai',   lbl:'AI at Work',                   sub:'Boost or challenge?',   ico:'\u{1F916}',  col:'I' },
-  { cat:'fun',  lbl:'Rise \u0026 Grow with SAP',    sub:'Your career journey',   ico:'\u{1F331}',  col:'N', vis:'c-skil' },
-  { cat:'lead', lbl:'Data vs Instinct',              sub:'Which leads?',          ico:'\u{1F9ED}',  col:'G' },
-  { cat:'skil', lbl:'Top Skill',                     sub:'AI-shaped world',       ico:'\u2B50',     col:'O' },
-  { cat:'fun',  lbl:'Christian Klein',               sub:"SAP's road ahead",      ico:'\u{1F454}',  col:'B', vis:'c-lead' },
-  { cat:'ai',   lbl:'Never Delegate',                sub:'What stays human?',     ico:'\u{1F49B}',  col:'I' },
-  { cat:'cult', lbl:'Culture Wins',                  sub:'Over technology?',      ico:'\u{1F30D}',  col:'N' },
-  { cat:'skil', lbl:'Upskilling',                    sub:'Part of the job?',      ico:'\u{1F4DA}',  col:'O' },
-  { cat:'fun',  lbl:'Game Changer',                  sub:'Name one this year',    ico:'\u26A1',     col:'G', vis:'c-ai'  },
+  { cat:'org',  lbl:'Most jobs in P&C will be fundamentally redesigned before they are automated.',                    sub:'Organization',    ico:'\u{1F3D7}',  col:'B' },
+  { cat:'ai',   lbl:'AI at Work: Efficiency Boost or Human Connection Challenge?',                                     sub:'AI',              ico:'\u{1F916}',  col:'I' },
+  { cat:'cult', lbl:'The future competitive advantage of organizations will be culture, not technology.',              sub:'Culture',         ico:'\u{1F30D}',  col:'N' },
+  { cat:'lead', lbl:'Leading with Data or Leading with Instinct?',                                                     sub:'Leadership',      ico:'\u{1F9ED}',  col:'G' },
+  { cat:'skil', lbl:"What's the most relevant leadership skill in an AI-shaped world?",                              sub:'Learning/Skills', ico:'\u{1F4DA}',  col:'O' },
+  { cat:'org',  lbl:'Organizations should hire for learning agility and AI fluency ahead of experience and tenure.',   sub:'Organization',    ico:'\u{1F3D7}',  col:'B' },
+  { cat:'ai',   lbl:'What work should never be delegated to AI?',                                                      sub:'AI',              ico:'\u{1F916}',  col:'I' },
+  { cat:'cult', lbl:"What's the biggest mindset shift still holding P&C back?",                                     sub:'Culture',         ico:'\u{1F30D}',  col:'N' },
+  { cat:'lead', lbl:"As a leader I don't need to be an AI expert, as I have a team of AI experts. Right or false?", sub:'Leadership',      ico:'\u{1F9ED}',  col:'G' },
+  { cat:'skil', lbl:'Missing learning time: How do we make upskilling part of the job, not an extra task?',           sub:'Learning/Skills', ico:'\u{1F4DA}',  col:'O' },
+  { cat:'org',  lbl:'Is HR from industry perspective moving to a model like that of Product Pod Teams?',              sub:'Organization',    ico:'\u{1F3D7}',  col:'B' },
+  { cat:'ai',   lbl:'How does AI look in P&C Practice?',                                                         sub:'AI',              ico:'\u{1F916}',  col:'I' },
+  { cat:'cult', lbl:'How should P&C redefine collaboration in an AI-first world?',                               sub:'Culture',         ico:'\u{1F30D}',  col:'N' },
+  { cat:'lead', lbl:'AI \u0026 Leadership: Superpower or Blind Spot?',                                          sub:'Leadership',      ico:'\u{1F9ED}',  col:'G' },
+  { cat:'skil', lbl:'What skills will matter most in an AI-first P&C organization?',                             sub:'Learning/Skills', ico:'\u{1F4DA}',  col:'O' },
 ];
 const CLS = { org:'c-org', ai:'c-ai', cult:'c-cult', lead:'c-lead', skil:'c-skil', fun:'c-fun' };
 
@@ -827,13 +931,35 @@ function seededShuffle(arr, seedStr) {
   return a;
 }
 
+// Build a card where each column stays category-aligned but row order is shuffled.
+// GRID layout: col0=org(0,5,10), col1=ai(1,6,11), col2=cult(2,7,12),
+//              col3=lead(3,8,13), col4=skil(4,9,14)
+// Each column gets its own independent shuffle so every player's row order differs.
+function buildCard(seedStr) {
+  const cols = [
+    [0, 5, 10],  // Organization
+    [1, 6, 11],  // AI
+    [2, 7, 12],  // Culture
+    [3, 8, 13],  // Leadership
+    [4, 9, 14],  // Learning/Skills
+  ];
+  // Shuffle each column with a slightly different seed so cols vary independently
+  const shuffled = cols.map((col, ci) => seededShuffle(col, seedStr + '-c' + ci));
+  // Reassemble row by row: row0=[col0[0],col1[0],...], row1=[col0[1],...], etc.
+  const card = [];
+  for (let row = 0; row < 3; row++)
+    for (let col = 0; col < 5; col++)
+      card.push(shuffled[col][row]);
+  return card;
+}
+
 function startGame() {
   const v = document.getElementById('nameInput').value.trim();
   playerName = v || 'Guest-' + Math.random().toString(36).slice(2,6).toUpperCase();
   if (!cardSeed) cardSeed = playerName + '-' + Date.now().toString(36);
   sessionStorage.setItem('bingo-name', playerName);
   sessionStorage.setItem('bingo-seed', cardSeed);
-  CARD = seededShuffle([0,1,2,3,4,5,6,7,8,9], cardSeed);
+  CARD = buildCard(cardSeed);
   document.getElementById('nameOverlay').classList.add('hidden');
   renderGrid();
   mqttConnect();
@@ -854,10 +980,12 @@ let marked=new Set(), myVoteIdx=null, myVoteCat=null, coveredSeen=new Set();
 function saveMarked()    { sessionStorage.setItem('bingo-marked',   JSON.stringify([...marked])); }
 function saveCovered()   { sessionStorage.setItem('bingo-covered',  JSON.stringify([...coveredSeen])); }
 let pollVote=null, wcSpeaker=null, wcSent=false, lastRound=-1, lastQid=-1, liveCounts={};
+// wcMode: null = closed, 'tap' = opened by user tapping a cell, 'live' = opened by moderator
+let wcMode = null;
 
 function boot() {
   if (playerName && cardSeed) {
-    CARD = seededShuffle([0,1,2,3,4,5,6,7,8,9], cardSeed);
+    CARD = buildCard(cardSeed);
     // Restore persisted marks so a refresh doesn't wipe the card
     try { marked = new Set(JSON.parse(sessionStorage.getItem('bingo-marked') || '[]')); } catch(e){}
     try { coveredSeen = new Set(JSON.parse(sessionStorage.getItem('bingo-covered') || '[]')); } catch(e){}
@@ -865,7 +993,10 @@ function boot() {
     renderGrid();
     mqttConnect();
   }
-  // else: name overlay stays visible until startGame() is called
+  else {
+    // New user — reveal the name overlay so they can enter their name
+    document.getElementById('nameOverlay').classList.remove('hidden');
+  }
 }
 
 function leadingCat() {
@@ -916,8 +1047,8 @@ function tap(vp) {
 
 function checkBingo() {
   if (!CARD.length) return;
-  // Win = full row only (5 cells). Columns (2 cells) are too easy and cause false positives.
-  const lines = [[0,1,2,3,4],[5,6,7,8,9]];
+  // Win = full row only (5 cells).
+  const lines = [[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14]];
   for (const line of lines) {
     if (line.every(vp => marked.has(CARD[vp]))) {
       document.getElementById('bingoClaimOv').classList.add('show');
@@ -951,6 +1082,7 @@ function applyState(st) {
 
   // 3. On full game reset (round resets) — wipe marks and all state
   if (st.round !== undefined && st.round !== lastRound) {
+    const prevRound = lastRound;           // -1 means "never synced yet"
     lastRound = st.round;
     if (st.round === 0) {
       // Explicit reset to 0 = fresh game
@@ -967,7 +1099,14 @@ function applyState(st) {
     if (bcBtn) bcBtn.disabled = false;
     document.getElementById('psDone').classList.remove('show');
     document.getElementById('pollOverlay').classList.remove('show');
-    document.getElementById('wildcardOverlay').classList.remove('show');
+    // Only close the wildcard overlay and reset wcMode on a genuine round advance.
+    // On the very first state sync (prevRound === -1) the user may have JUST tapped
+    // a wildcard cell — closing it here would make the overlay disappear after ~1s.
+    if (prevRound !== -1) {
+      wcMode = null;
+      document.getElementById('wildcardOverlay').classList.remove('show');
+      clearInterval(wcCountdownIv);
+    }
   }
 
   if (st.counts) liveCounts = st.counts;
@@ -980,8 +1119,18 @@ function applyState(st) {
   } else { banner.classList.remove('show'); }
   if (st.poll) showPoll(st.poll);
   else document.getElementById('pollOverlay').classList.remove('show');
-  if (st.wildcard) showWildcard(true);
-  else { document.getElementById('wildcardOverlay').classList.remove('show'); clearInterval(wcCountdownIv); }
+  if (st.wildcard) {
+    showWildcard(true);  // moderator opened the round — upgrade sheet to live mode
+  } else {
+    // Only close the overlay if the moderator previously opened it (wcMode==='live').
+    // If the user opened it themselves by tapping a cell (wcMode==='tap'),
+    // a state message with wildcard:false must NOT close it.
+    if (wcMode === 'live') {
+      document.getElementById('wildcardOverlay').classList.remove('show');
+      clearInterval(wcCountdownIv);
+      wcMode = null;
+    }
+  }
 }
 
 function showPoll(poll) {
@@ -1005,14 +1154,19 @@ function votePoll(key, cat) {
 let wcCountdownIv = null;
 function showWildcard(isLive) {
   if (wcSent) return;
+  // Track who opened the overlay so applyState knows whether to close it
+  wcMode = isLive ? 'live' : 'tap';
   document.getElementById('wcInput').value = '';
   document.getElementById('wcDone').classList.remove('show');
-  document.getElementById('wcSend').disabled = !isLive;
+  // Submit is ALWAYS enabled — audience can send their question at any time.
+  // They don't need to wait for the moderator to open the wildcard round.
+  document.getElementById('wcSend').disabled = false;
   wcSpeaker = null;
   document.querySelectorAll('.wc-speaker').forEach(b => b.classList.remove('picked'));
+  // Hide the "waiting" hint — no longer relevant since submit is always open
   const hint = document.getElementById('wcWaiting');
-  if (hint) hint.style.display = isLive ? 'none' : 'block';
-  // Countdown bar — only start when moderator officially opens the round
+  if (hint) hint.style.display = 'none';
+  // Countdown bar — only show when moderator officially opens the round live
   const cdBox = document.getElementById('wcCountdown');
   if (isLive) {
     cdBox.style.display = 'block';
@@ -1046,18 +1200,20 @@ function pickSpeaker(name) {
     const isMe = b.querySelector('.wc-sname').textContent.trim() === name;
     b.classList.toggle('picked', isMe);
   });
-  // Move focus to the question box so keyboard appears immediately
-  document.getElementById('wcInput').focus();
+  // Scroll the textarea into view so it's visible above the keyboard, then focus
+  const inp = document.getElementById('wcInput');
+  inp.scrollIntoView({ behavior:'smooth', block:'center' });
+  setTimeout(() => inp.focus(), 180);
 }
 function sendWildcard() {
   const text = document.getElementById('wcInput').value.trim();
-  if (!wcSpeaker) { toast('Pick a panelist first!'); return; }
   if (text.length < 3) { toast('Type a question first!'); return; }
-  pub('aud/question', { text, from:wcSpeaker });
+  // Send the question — include the chosen panelist if one was picked, otherwise 'Audience'
+  pub('aud/question', { text, from: wcSpeaker || 'Audience' });
   wcSent = true;
   document.getElementById('wcSend').disabled = true;
   document.getElementById('wcDone').classList.add('show');
-  toast('\u2714 Question sent to ' + wcSpeaker + '!');
+  toast('\u2714 Question sent!');
   // Return to bingo card automatically after a short delay
   setTimeout(() => {
     document.getElementById('wildcardOverlay').classList.remove('show');
@@ -1073,5 +1229,6 @@ function toast(m) {
 
 boot();
 </script>
-</body>
-</html>
+
+
+</body></html>
