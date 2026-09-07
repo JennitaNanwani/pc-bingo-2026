@@ -423,94 +423,8 @@ header::after {
 .ps-done.show { display:block; }
 
 /* ─────────────────────────────────────────────────────────────────────
-   WILDCARD OVERLAY
+   WILDCARD OVERLAY — removed (audience submits via MS Teams chat)
 ───────────────────────────────────────────────────────────────────── */
-.wildcard-overlay {
-  display:none; position:fixed; inset:0; z-index:950;
-  background:rgba(0,0,0,.82); backdrop-filter:blur(8px);
-  align-items:flex-end; justify-content:center;
-}
-.wildcard-overlay.show { display:flex; }
-.wc-sheet {
-  background:linear-gradient(160deg,var(--navy),var(--navy3));
-  border:1px solid rgba(255,255,255,.1); border-top:3px solid var(--gold);
-  border-radius:20px 20px 0 0; padding:20px 18px 44px;
-  width:100%; max-width:420px;
-  max-height:88vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
-  animation:sheetUp .32s cubic-bezier(.34,1.56,.64,1);
-}
-/* Header block */
-.wc-header { text-align:center; margin-bottom:20px; }
-.wc-badge {
-  display:inline-block; font-size:.6rem; font-weight:700; letter-spacing:2px;
-  text-transform:uppercase; color:var(--gold); background:rgba(245,166,35,.12);
-  border:1px solid rgba(245,166,35,.3); border-radius:20px;
-  padding:3px 12px; margin-bottom:8px;
-}
-.wc-headline {
-  font-size:clamp(1.05rem,4.2vw,1.22rem); font-weight:700; color:#fff;
-  margin-bottom:5px;
-}
-.wc-intro {
-  font-size:clamp(.74rem,2.9vw,.84rem); color:rgba(255,255,255,.48);
-  line-height:1.5;
-}
-/* Step labels */
-.wc-step {
-  display:flex; align-items:center; gap:10px;
-  margin-bottom:10px;
-}
-.wc-step-num {
-  width:24px; height:24px; border-radius:50%; flex-shrink:0;
-  background:var(--gold); color:#00144A;
-  font-size:.75rem; font-weight:700;
-  display:flex; align-items:center; justify-content:center;
-}
-.wc-step-txt {
-  font-size:clamp(.78rem,3.1vw,.9rem); font-weight:700; color:#fff;
-}
-/* Speaker row */
-.wc-speakers { display:flex; gap:8px; margin-bottom:18px; }
-.wc-speaker {
-  flex:1; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.13);
-  border-radius:10px; padding:10px 6px 8px; text-align:center; cursor:pointer;
-  font-family:'72','Segoe UI',Arial,sans-serif; color:#fff;
-  transition:all .14s; display:flex; flex-direction:column; align-items:center; gap:2px;
-}
-.wc-speaker:active { transform:scale(.95); }
-.wc-speaker.picked {
-  background:rgba(245,166,35,.18); border-color:var(--gold); color:var(--gold);
-}
-.wc-speaker.picked .wc-stap { color:var(--gold); }
-.wc-av   { font-size:1.4rem; line-height:1; }
-.wc-sname { font-size:clamp(.76rem,3vw,.86rem); font-weight:700; line-height:1.2; }
-.wc-stap  { font-size:.6rem; color:rgba(255,255,255,.35); font-weight:400; }
-.wc-speaker.picked .wc-stap::before { content:'\2713 '; }
-/* Textarea */
-.wc-input {
-  width:100%; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.13);
-  border-radius:10px; padding:13px 14px;
-  font-size:clamp(.8rem,3.2vw,.9rem); color:#fff;
-  font-family:'72','Segoe UI',Arial,sans-serif; resize:none; outline:none;
-  transition:border-color .14s; margin-bottom:16px;
-}
-.wc-input:focus { border-color:var(--gold); }
-.wc-input::placeholder { color:rgba(255,255,255,.26); }
-/* Send button */
-.wc-send {
-  width:100%; background:linear-gradient(135deg,var(--gold),#E65100);
-  border:none; border-radius:10px; padding:15px;
-  font-family:'72','Segoe UI',Arial,sans-serif;
-  font-size:clamp(.84rem,3.4vw,.96rem); font-weight:700;
-  color:#fff; cursor:pointer; transition:opacity .14s; margin-bottom:0;
-}
-.wc-send:disabled { opacity:.35; cursor:not-allowed; }
-.wc-done {
-  text-align:center; padding:12px 0 0;
-  font-size:clamp(.72rem,2.9vw,.84rem); color:rgba(255,255,255,.55);
-  display:none; line-height:1.5;
-}
-.wc-done.show { display:block; }
 
 /* ─────────────────────────────────────────────────────────────────────
    TOAST
@@ -772,70 +686,7 @@ header::after {
 </div>
 
 <!-- WILDCARD -->
-<div class="wildcard-overlay" id="wildcardOverlay">
-  <div class="wc-sheet">
 
-    <div class="wc-header">
-      <div class="wc-badge">◆ WILDCARD</div>
-      <div class="wc-headline">Your turn to ask!</div>
-      <div class="wc-intro">The audience picks the question this round.<br>Follow the 3 steps below.</div>
-    </div>
-
-    <!-- STEP 1 -->
-    <div class="wc-step">
-      <div class="wc-step-num">1</div>
-      <div class="wc-step-txt">Who do you want to ask?</div>
-    </div>
-    <div class="wc-speakers" id="wcSpeakers">
-      <button class="wc-speaker" onclick="pickSpeaker(&#39;Christian&#39;)">
-        <span class="wc-av">👤</span>
-        <span class="wc-sname">Christian</span>
-        <span class="wc-stap">Tap to pick</span>
-      </button>
-      <button class="wc-speaker" onclick="pickSpeaker(&#39;Verena&#39;)">
-        <span class="wc-av">👤</span>
-        <span class="wc-sname">Verena</span>
-        <span class="wc-stap">Tap to pick</span>
-      </button>
-      <button class="wc-speaker" onclick="pickSpeaker(&#39;Miri&#39;)">
-        <span class="wc-av">👤</span>
-        <span class="wc-sname">Miri</span>
-        <span class="wc-stap">Tap to pick</span>
-      </button>
-    </div>
-
-    <!-- STEP 2 -->
-    <div class="wc-step">
-      <div class="wc-step-num">2</div>
-      <div class="wc-step-txt">What do you want to ask them?</div>
-    </div>
-    <textarea class="wc-input" id="wcInput" rows="3" maxlength="200" placeholder="Type your question here… (max 200 characters)"></textarea>
-
-    <!-- STEP 3 -->
-    <div class="wc-step">
-      <div class="wc-step-num">3</div>
-      <div class="wc-step-txt">Send it to the moderator!</div>
-    </div>
-    <div id="wcWaiting" style="display:none;text-align:center;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:clamp(.72rem,2.9vw,.82rem);color:rgba(245,166,35,.9);line-height:1.5;">
-      ⏳ Get your question ready!<br>The submit button unlocks when the moderator opens the wildcard round.
-    </div>
-    <!-- Countdown bar — only shown when moderator has opened the round (isLive) -->
-    <div id="wcCountdown" style="display:none;margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
-        <span style="font-size:clamp(.64rem,2.6vw,.74rem);color:rgba(255,255,255,.5);">Time to submit</span>
-        <span id="wcTimerLbl" style="font-size:clamp(.72rem,2.9vw,.82rem);font-weight:700;color:var(--gold);"></span>
-      </div>
-      <div style="height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;">
-        <div id="wcTimerBar" style="height:100%;background:linear-gradient(90deg,var(--gold),#E65100);border-radius:3px;transition:width .9s linear;width:100%;"></div>
-      </div>
-    </div>
-    <button class="wc-send" id="wcSend" onclick="sendWildcard()">
-      ▶ Submit My Question
-    </button>
-    <div class="wc-done" id="wcDone">✓ Sent! The moderator will pick the best question — watch the screen.</div>
-
-  </div>
-</div>
 
 <!-- POLL -->
 <div class="poll-overlay" id="pollOverlay">
@@ -880,7 +731,7 @@ function mqttConnect() {
         //    2 000 ms is well beyond that but still before any real live publish.
         const isStale = (packet && packet.retain) ||
                         (Date.now() - mqttConnectTime < 2000);
-        if (isStale) { st.wildcard = false; st.poll = null; }
+        if (isStale) { st.poll = null; }
         applyState(st);
       }
     } catch(e) {}
@@ -949,9 +800,7 @@ function claimBingo() {
 let marked=new Set(), myVoteIdx=null, myVoteCat=null, coveredSeen=new Set();
 function saveMarked()    { sessionStorage.setItem('bingo-marked',   JSON.stringify([...marked])); }
 function saveCovered()   { sessionStorage.setItem('bingo-covered',  JSON.stringify([...coveredSeen])); }
-let pollVote=null, pollShownQ=null, pollDismissed=false, wcSpeaker=null, wcSent=false, lastRound=-1, lastQid=-1, liveCounts={};
-// wcMode: null = closed, 'tap' = opened by user tapping a cell, 'live' = opened by moderator
-let wcMode = null;
+let pollVote=null, pollShownQ=null, pollDismissed=false, lastRound=-1, lastQid=-1, liveCounts={};
 
 function boot() {
   if (playerName) {
@@ -1007,12 +856,7 @@ function tap(vp) {
   myVoteCat = c.cat;
   pub('vote', { cat: c.cat });
   renderGrid();
-  // Wildcard cell — open the submission sheet immediately so they can type their question
-  if (c.cat === 'fun') {
-    showWildcard();
-  } else {
-    toast('\u2714 Voted \u2014 gold glow = your pick!');
-  }
+  toast('\u2714 Voted \u2014 gold glow = your pick!');
 }
 
 function checkBingo() {
@@ -1077,7 +921,7 @@ function applyState(st) {
       sessionStorage.removeItem('bingo-covered');
     }
     myVoteIdx = null; myVoteCat = null; pollVote = null; pollShownQ = null; pollDismissed = false;
-    wcSpeaker = null; wcSent = false; liveCounts = {};
+    liveCounts = {};
     document.getElementById('bingoBanner').classList.remove('show');
     document.getElementById('bingoClaimOv').classList.remove('show');
     document.getElementById('bcClaimed').classList.remove('show');
@@ -1085,13 +929,8 @@ function applyState(st) {
     if (bcBtn) bcBtn.disabled = false;
     document.getElementById('psDone').classList.remove('show');
     document.getElementById('pollOverlay').classList.remove('show');
-    // Only close the wildcard overlay and reset wcMode on a genuine round advance.
-    // On the very first state sync (prevRound === -1) the user may have JUST tapped
-    // a wildcard cell — closing it here would make the overlay disappear after ~1s.
+    // On the very first state sync (prevRound === -1) nothing needs resetting.
     if (prevRound !== -1) {
-      wcMode = null;
-      document.getElementById('wildcardOverlay').classList.remove('show');
-      clearInterval(wcCountdownIv);
     }
   }
 
@@ -1109,18 +948,6 @@ function applyState(st) {
     // they carry poll:null deliberately so the overlay is not re-triggered.
     if (st.poll) showPoll(st.poll);
     else document.getElementById('pollOverlay').classList.remove('show');
-  }
-  if (st.wildcard) {
-    showWildcard(true);  // moderator opened the round — upgrade sheet to live mode
-  } else {
-    // Only close the overlay if the moderator previously opened it (wcMode==='live').
-    // If the user opened it themselves by tapping a cell (wcMode==='tap'),
-    // a state message with wildcard:false must NOT close it.
-    if (wcMode === 'live') {
-      document.getElementById('wildcardOverlay').classList.remove('show');
-      clearInterval(wcCountdownIv);
-      wcMode = null;
-    }
   }
 }
 
@@ -1155,74 +982,6 @@ function votePoll(key, cat) {
   toast('\u2714 Poll vote sent!');
 }
 
-let wcCountdownIv = null;
-function showWildcard(isLive) {
-  if (wcSent) return;
-  // Track who opened the overlay so applyState knows whether to close it
-  wcMode = isLive ? 'live' : 'tap';
-  document.getElementById('wcInput').value = '';
-  document.getElementById('wcDone').classList.remove('show');
-  // Submit is ALWAYS enabled — audience can send their question at any time.
-  // They don't need to wait for the moderator to open the wildcard round.
-  document.getElementById('wcSend').disabled = false;
-  wcSpeaker = null;
-  document.querySelectorAll('.wc-speaker').forEach(b => b.classList.remove('picked'));
-  // Hide the "waiting" hint — no longer relevant since submit is always open
-  const hint = document.getElementById('wcWaiting');
-  if (hint) hint.style.display = 'none';
-  // Countdown bar — only show when moderator officially opens the round live
-  const cdBox = document.getElementById('wcCountdown');
-  if (isLive) {
-    cdBox.style.display = 'block';
-    startWcCountdown(45);
-  } else {
-    cdBox.style.display = 'none';
-    clearInterval(wcCountdownIv);
-  }
-  document.getElementById('wildcardOverlay').classList.add('show');
-}
-function startWcCountdown(total) {
-  clearInterval(wcCountdownIv);
-  let left = total;
-  const bar = document.getElementById('wcTimerBar');
-  const lbl = document.getElementById('wcTimerLbl');
-  function tick() {
-    lbl.textContent = left + 's';
-    bar.style.width = (left / total * 100) + '%';
-    bar.style.background = left <= 10
-      ? 'linear-gradient(90deg,#E53935,#B71C1C)'
-      : 'linear-gradient(90deg,var(--gold),#E65100)';
-    if (left <= 0) { clearInterval(wcCountdownIv); lbl.textContent = 'Time\'s up!'; bar.style.width='0%'; }
-    left--;
-  }
-  tick();
-  wcCountdownIv = setInterval(tick, 1000);
-}
-function pickSpeaker(name) {
-  wcSpeaker = name;
-  document.querySelectorAll('.wc-speaker').forEach(b => {
-    const isMe = b.querySelector('.wc-sname').textContent.trim() === name;
-    b.classList.toggle('picked', isMe);
-  });
-  // Scroll the textarea into view so it's visible above the keyboard, then focus
-  const inp = document.getElementById('wcInput');
-  inp.scrollIntoView({ behavior:'smooth', block:'center' });
-  setTimeout(() => inp.focus(), 180);
-}
-function sendWildcard() {
-  const text = document.getElementById('wcInput').value.trim();
-  if (text.length < 3) { toast('Type a question first!'); return; }
-  // Send the question — include the chosen panelist if one was picked, otherwise 'Audience'
-  pub('aud/question', { text, from: wcSpeaker || 'Audience' });
-  wcSent = true;
-  document.getElementById('wcSend').disabled = true;
-  document.getElementById('wcDone').classList.add('show');
-  toast('\u2714 Question sent!');
-  // Return to bingo card automatically after a short delay
-  setTimeout(() => {
-    document.getElementById('wildcardOverlay').classList.remove('show');
-  }, 1800);
-}
 
 let _t;
 function toast(m) {
