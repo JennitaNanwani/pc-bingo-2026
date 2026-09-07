@@ -844,7 +844,7 @@ header::after {
     <div class="ps-q" id="psQ"></div>
     <div class="ps-opts" id="psOpts"></div>
     <div class="ps-done" id="psDone">✓ Vote sent! Watch the screen.</div>
-    <button onclick="document.getElementById(&#39;pollOverlay&#39;).classList.remove(&#39;show&#39;)" style="margin-top:14px;width:100%;padding:10px;border:none;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;font-size:.9rem;cursor:pointer;">✕ Back to card</button>
+    <button onclick="dismissPoll()" style="margin-top:14px;width:100%;padding:10px;border:none;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;font-size:.9rem;cursor:pointer;">✕ Back to card</button>
   </div>
 </div>
 
@@ -915,51 +915,21 @@ const CLS = { org:'c-org', ai:'c-ai', cult:'c-cult', lead:'c-lead', skil:'c-skil
 
 // ── PLAYER + SHUFFLED CARD ────────────────────────────────────────────
 let playerName = sessionStorage.getItem('bingo-name') || '';
-let cardSeed   = sessionStorage.getItem('bingo-seed') || '';
 let CARD = []; // CARD[visualPos] = actual GRID index
 
-function seededShuffle(arr, seedStr) {
-  let s = 0;
-  for (let i = 0; i < seedStr.length; i++)
-    s = (Math.imul(s, 31) + seedStr.charCodeAt(i)) | 0;
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    s = (Math.imul(s, 1664525) + 1013904223) | 0;
-    const j = Math.abs(s) % (i + 1);
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-// Build a card where each column stays category-aligned but row order is shuffled.
-// GRID layout: col0=org(0,5,10), col1=ai(1,6,11), col2=cult(2,7,12),
-//              col3=lead(3,8,13), col4=skil(4,9,14)
-// Each column gets its own independent shuffle so every player's row order differs.
-function buildCard(seedStr) {
-  const cols = [
-    [0, 5, 10],  // Organization
-    [1, 6, 11],  // AI
-    [2, 7, 12],  // Culture
-    [3, 8, 13],  // Leadership
-    [4, 9, 14],  // Learning/Skills
-  ];
-  // Shuffle each column with a slightly different seed so cols vary independently
-  const shuffled = cols.map((col, ci) => seededShuffle(col, seedStr + '-c' + ci));
-  // Reassemble row by row: row0=[col0[0],col1[0],...], row1=[col0[1],...], etc.
-  const card = [];
-  for (let row = 0; row < 3; row++)
-    for (let col = 0; col < 5; col++)
-      card.push(shuffled[col][row]);
-  return card;
+// Fixed layout — everyone sees the identical card, no per-player shuffle.
+// Row 0: org0,ai0,cult0,lead0,skil0
+// Row 1: org1,ai1,cult1,lead1,skil1
+// Row 2: org2,ai2,cult2,lead2,skil2
+function buildCard() {
+  return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 }
 
 function startGame() {
   const v = document.getElementById('nameInput').value.trim();
   playerName = v || 'Guest-' + Math.random().toString(36).slice(2,6).toUpperCase();
-  if (!cardSeed) cardSeed = playerName + '-' + Date.now().toString(36);
   sessionStorage.setItem('bingo-name', playerName);
-  sessionStorage.setItem('bingo-seed', cardSeed);
-  CARD = buildCard(cardSeed);
+  CARD = buildCard();
   document.getElementById('nameOverlay').classList.add('hidden');
   renderGrid();
   mqttConnect();
@@ -979,13 +949,13 @@ function claimBingo() {
 let marked=new Set(), myVoteIdx=null, myVoteCat=null, coveredSeen=new Set();
 function saveMarked()    { sessionStorage.setItem('bingo-marked',   JSON.stringify([...marked])); }
 function saveCovered()   { sessionStorage.setItem('bingo-covered',  JSON.stringify([...coveredSeen])); }
-let pollVote=null, wcSpeaker=null, wcSent=false, lastRound=-1, lastQid=-1, liveCounts={};
+let pollVote=null, pollShownQ=null, pollDismissed=false, wcSpeaker=null, wcSent=false, lastRound=-1, lastQid=-1, liveCounts={};
 // wcMode: null = closed, 'tap' = opened by user tapping a cell, 'live' = opened by moderator
 let wcMode = null;
 
 function boot() {
-  if (playerName && cardSeed) {
-    CARD = buildCard(cardSeed);
+  if (playerName) {
+    CARD = buildCard();
     // Restore persisted marks so a refresh doesn't wipe the card
     try { marked = new Set(JSON.parse(sessionStorage.getItem('bingo-marked') || '[]')); } catch(e){}
     try { coveredSeen = new Set(JSON.parse(sessionStorage.getItem('bingo-covered') || '[]')); } catch(e){}
@@ -1061,14 +1031,30 @@ function applyState(st) {
   // 1. Process covered FIRST — before votes are wiped — so vote matching works
   if (st.covered) {
     Object.keys(st.covered).forEach(cat => {
-      if (!coveredSeen.has(cat)) {
-        coveredSeen.add(cat);
-        if (myVoteCat === cat && myVoteIdx !== null) {
-          marked.add(myVoteIdx);
+      // Key = "cat:questionText" — allows the same category to be asked multiple
+      // times (Q1, Q2, Q3) without the second question being ignored by dedup.
+      const qText  = st.covered[cat]?.q || null;
+      const covKey = cat + ':' + (qText || '');
+      if (!coveredSeen.has(covKey)) {
+        coveredSeen.add(covKey);
+        // The moderator stores the exact question text in covered[cat].q.
+        // Use it to find the specific cell on this card (text + category match).
+        // Fall back to the voted cell if no text is provided (old-format state).
+        const specificIdx = qText
+          ? GRID.findIndex(g => g.cat === cat && g.lbl === qText)
+          : -1;
+        const idxToMark = specificIdx !== -1 ? specificIdx
+          : (myVoteCat === cat && myVoteIdx !== null ? myVoteIdx : -1);
+        if (idxToMark !== -1 && !marked.has(idxToMark)) {
+          marked.add(idxToMark);
           saveMarked();
-          toast('\u2705 Your pick was called \u2014 cell marked!');
+          toast(myVoteCat === cat
+            ? '\u2705 Your pick was called \u2014 cell marked!'
+            : '\u2705 Question on your card \u2014 cell marked!');
           checkBingo();
         }
+        // Clear the vote for this category so other cells un-dim
+        if (myVoteCat === cat) { myVoteIdx = null; myVoteCat = null; }
       }
     });
     saveCovered();
@@ -1090,7 +1076,7 @@ function applyState(st) {
       sessionStorage.removeItem('bingo-marked');
       sessionStorage.removeItem('bingo-covered');
     }
-    myVoteIdx = null; myVoteCat = null; pollVote = null;
+    myVoteIdx = null; myVoteCat = null; pollVote = null; pollShownQ = null; pollDismissed = false;
     wcSpeaker = null; wcSent = false; liveCounts = {};
     document.getElementById('bingoBanner').classList.remove('show');
     document.getElementById('bingoClaimOv').classList.remove('show');
@@ -1117,8 +1103,13 @@ function applyState(st) {
     document.getElementById('stageLdr').textContent  = '\u25BA ' + st.question.leader;
     banner.classList.add('show');
   } else { banner.classList.remove('show'); }
-  if (st.poll) showPoll(st.poll);
-  else document.getElementById('pollOverlay').classList.remove('show');
+  if (!st.voteOnly) {
+    // Only process poll visibility on full state updates (not vote-count pings).
+    // voteOnly:true messages are emitted by the moderator on every audience vote;
+    // they carry poll:null deliberately so the overlay is not re-triggered.
+    if (st.poll) showPoll(st.poll);
+    else document.getElementById('pollOverlay').classList.remove('show');
+  }
   if (st.wildcard) {
     showWildcard(true);  // moderator opened the round — upgrade sheet to live mode
   } else {
@@ -1134,12 +1125,25 @@ function applyState(st) {
 }
 
 function showPoll(poll) {
+  // New poll detected (different question) — reset per-poll state so it shows fresh
+  if (poll.question !== pollShownQ) {
+    pollShownQ = poll.question;
+    pollVote = null;
+    pollDismissed = false;
+  }
   document.getElementById('psQ').textContent = poll.question;
   document.getElementById('psOpts').innerHTML = Object.entries(poll.answers).map(([k,v]) =>
     `<button class="ps-opt${pollVote===k?' picked':''}" onclick="votePoll('${k}','${poll.cat}')">${v.label}</button>`
   ).join('');
   document.getElementById('psDone').classList.toggle('show', !!pollVote);
-  document.getElementById('pollOverlay').classList.add('show');
+  // Only open the overlay if the user has not already voted on or dismissed THIS poll
+  if (!pollVote && !pollDismissed) {
+    document.getElementById('pollOverlay').classList.add('show');
+  }
+}
+function dismissPoll() {
+  pollDismissed = true;
+  document.getElementById('pollOverlay').classList.remove('show');
 }
 function votePoll(key, cat) {
   if (pollVote) { toast('Already voted!'); return; }
